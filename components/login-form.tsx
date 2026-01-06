@@ -15,6 +15,7 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import Image from "next/image";
 
 export function LoginForm({
   className,
@@ -47,6 +48,31 @@ export function LoginForm({
     }
   };
 
+  const handleSignWithGoogle = async () => {
+    const supabase = createClient();
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `http://localhost:3000//auth/callback`,
+          queryParams: {
+            access_type: "offline",
+            prompt: "consent",
+          },
+        },
+      });
+      if (error) throw error;
+      router.push("/protected");
+    } catch (error: unknown) {
+      setError(error instanceof Error ? error.message : "An error occured");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -55,6 +81,17 @@ export function LoginForm({
           <CardDescription>
             Enter your email below to login to your account
           </CardDescription>
+          <div className="flex items-center justify-center">
+            <Button onClick={handleSignWithGoogle}>
+              <Image
+                src="/google_logo.svg"
+                alt="google login logo"
+                height={30}
+                width={30}
+              />
+              Sign with Google
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleLogin}>

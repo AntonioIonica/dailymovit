@@ -1,109 +1,236 @@
-<a href="https://demo-nextjs-with-supabase.vercel.app/">
-  <img alt="Next.js and Supabase Starter Kit - the fastest way to build apps with Next.js and Supabase" src="https://demo-nextjs-with-supabase.vercel.app/opengraph-image.png">
-  <h1 align="center">Next.js and Supabase Starter Kit</h1>
-</a>
+<!-- PROJECT SHIELDS -->
 
-<p align="center">
- The fastest way to build apps with Next.js and Supabase
-</p>
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+[![Unlicense License][license-shield]][license-url]
+[![LinkedIn][linkedin-shield]][linkedin-url]
 
-<p align="center">
-  <a href="#features"><strong>Features</strong></a> ·
-  <a href="#demo"><strong>Demo</strong></a> ·
-  <a href="#deploy-to-vercel"><strong>Deploy to Vercel</strong></a> ·
-  <a href="#clone-and-run-locally"><strong>Clone and run locally</strong></a> ·
-  <a href="#feedback-and-issues"><strong>Feedback and issues</strong></a>
-  <a href="#more-supabase-examples"><strong>More Examples</strong></a>
-</p>
-<br/>
+<!-- PROJECT LOGO -->
+<br />
+<div align="center">
+  <a href="https://github.com/AntonioIonica/the-wild-cabin">
+    <img src="./public/logo-light.png" alt="Logo" width="80" height="80">
+  </a>
 
-## Features
+<h3 align="center">The Wild Cabin</h3>
 
-- Works across the entire [Next.js](https://nextjs.org) stack
-  - App Router
-  - Pages Router
-  - Proxy
-  - Client
-  - Server
-  - It just works!
-- supabase-ssr. A package to configure Supabase Auth to use cookies
-- Password-based authentication block installed via the [Supabase UI Library](https://supabase.com/ui/docs/nextjs/password-based-auth)
-- Styling with [Tailwind CSS](https://tailwindcss.com)
-- Components with [shadcn/ui](https://ui.shadcn.com/)
-- Optional deployment with [Supabase Vercel Integration and Vercel deploy](#deploy-your-own)
-  - Environment variables automatically assigned to Vercel project
+  <p align="center">
+    Hotel management web app where employees can manage bookings, cabins and guests. The site is populated already with examples.
+    <br />
+    <a href="https://github.com/AntonioIonica/the-wild-cabin"><strong>Explore the docs »</strong></a>
+    <br />
+    <br />
+    <a href="https://github.com/AntonioIonica/the-wild-cabin">View Demo</a>
+    &middot;
+    <a href="https://github.com/AntonioIonica/the-wild-cabin/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
+    &middot;
+    <a href="https://github.com/AntonioIonica/the-wild-cabin/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
+  </p>
+</div>
 
-## Demo
 
-You can view a fully working demo at [demo-nextjs-with-supabase.vercel.app](https://demo-nextjs-with-supabase.vercel.app/).
 
-## Deploy to Vercel
+<!-- TABLE OF CONTENTS -->
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#about-the-project">About The Project</a>
+      <ul>
+        <li><a href="#built-with">Built With</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#getting-started">Getting Started</a>
+      <ul>
+        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#installation">Installation</a></li>
+      </ul>
+    </li>
+    <li><a href="#usage">Usage</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#contributing">Contributing</a></li>
+    <li><a href="#license">License</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#acknowledgments">Acknowledgments</a></li>
+  </ol>
+</details>
 
-Vercel deployment will guide you through creating a Supabase account and project.
 
-After installation of the Supabase integration, all relevant environment variables will be assigned to the project so the deployment is fully functioning.
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-supabase&project-name=nextjs-with-supabase&repository-name=nextjs-with-supabase&demo-title=nextjs-with-supabase&demo-description=This+starter+configures+Supabase+Auth+to+use+cookies%2C+making+the+user%27s+session+available+throughout+the+entire+Next.js+app+-+Client+Components%2C+Server+Components%2C+Route+Handlers%2C+Server+Actions+and+Middleware.&demo-url=https%3A%2F%2Fdemo-nextjs-with-supabase.vercel.app%2F&external-id=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-supabase&demo-image=https%3A%2F%2Fdemo-nextjs-with-supabase.vercel.app%2Fopengraph-image.png)
+<!-- ABOUT THE PROJECT -->
+## About The Project
 
-The above will also clone the Starter kit to your GitHub, you can clone that locally and develop locally.
+[![Product Name Screen Shot][product-screenshot]](https://ibb.co/DD7bXPzX)
 
-If you wish to just develop locally and not deploy to Vercel, [follow the steps below](#clone-and-run-locally).
+Another tutorial project where I followed James Schmedtmann guide with the goal of learning multiple technologies. 
+Hotel management platform with closed account creation for the employees. They manage the guests check in and check out and create records of cabins.
 
-## Clone and run locally
+Key features:
+  - hotel employees can login, as there is no register page-only employees can access the platform
+  - visual statistics for bookings, cabins
+  - real time update of cabins using Supabase
+  - account setting for employees
+  - managing cabins
+  - dark mode
 
-1. You'll first need a Supabase project which can be made [via the Supabase dashboard](https://database.new)
+Topics I learned: 
+  - authentication and authorization using Supabase
+  - state management using React Query
+  - dark mode
+  - data visualization using Recharts
+  - React hot toast
 
-2. Create a Next.js app using the Supabase Starter template npx command
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-   ```bash
-   npx create-next-app --example with-supabase with-supabase-app
-   ```
 
-   ```bash
-   yarn create next-app --example with-supabase with-supabase-app
-   ```
 
-   ```bash
-   pnpm create next-app --example with-supabase with-supabase-app
-   ```
+### Built With
 
-3. Use `cd` to change into the app's directory
+* React [![React][react.dev]][React-url]
+* Supabase [![Supabase][supabase.com]][Supabase-url]
+* Recharts [[Recharts-url]]
+* Styled components [![Styled components][styled-components.com]][Styled Components-url]
+* Vite [![Vite][vite.dev]][Vite-url]
 
-   ```bash
-   cd with-supabase-app
-   ```
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-4. Rename `.env.example` to `.env.local` and update the following:
 
-  ```env
-  NEXT_PUBLIC_SUPABASE_URL=[INSERT SUPABASE PROJECT URL]
-  NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=[INSERT SUPABASE PROJECT API PUBLISHABLE OR ANON KEY]
+
+<!-- GETTING STARTED -->
+## Getting Started
+
+This is an example of how you may give instructions on setting up your project locally.
+To get a local copy up and running follow these simple example steps.
+
+### Prerequisites
+
+
+* npm
+  ```sh
+  npm install npm@latest -g
   ```
-  > [!NOTE]
-  > This example uses `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, which refers to Supabase's new **publishable** key format.
-  > Both legacy **anon** keys and new **publishable** keys can be used with this variable name during the transition period. Supabase's dashboard may show `NEXT_PUBLIC_SUPABASE_ANON_KEY`; its value can be used in this example.
-  > See the [full announcement](https://github.com/orgs/supabase/discussions/29260) for more information.
 
-  Both `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` can be found in [your Supabase project's API settings](https://supabase.com/dashboard/project/_?showConnect=true)
+### Installation
 
-5. You can now run the Next.js local development server:
-
-   ```bash
-   npm run dev
+1. Clone the repo
+   ```sh
+   git clone https://github.com/AntonioIonica/the-wild-cabin
+   ```
+2. Install NPM packages
+   ```sh
+   npm install
+   ```
+3. Change git remote url to avoid accidental pushes to base project
+   ```sh
+   git remote set-url origin github_username/repo_name
+   git remote -v # confirm the changes
+   ```
+4. Start the project
+   ``` sh
+   npm run start
    ```
 
-   The starter kit should now be running on [localhost:3000](http://localhost:3000/).
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-6. This template comes with the default shadcn/ui style initialized. If you instead want other ui.shadcn styles, delete `components.json` and [re-install shadcn/ui](https://ui.shadcn.com/docs/installation/next)
 
-> Check out [the docs for Local Development](https://supabase.com/docs/guides/getting-started/local-development) to also run Supabase locally.
 
-## Feedback and issues
+<!-- USAGE EXAMPLES -->
+## Usage
 
-Please file feedback and issues over on the [Supabase GitHub org](https://github.com/supabase/supabase/issues/new/choose).
+This project goal is to master the mentioned technologies as the code is intellectual property of Schmedtmann
 
-## More Supabase examples
 
-- [Next.js Subscription Payments Starter](https://github.com/vercel/nextjs-subscription-payments)
-- [Cookie-based Auth and the Next.js 13 App Router (free course)](https://youtube.com/playlist?list=PL5S4mPUpp4OtMhpnp93EFSo42iQ40XjbF)
-- [Supabase Auth and the Next.js App Router](https://github.com/supabase/supabase/tree/master/examples/auth/nextjs)
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+<!-- ROADMAP -->
+## Roadmap
+
+- [x] populated cabins
+
+
+See the [open issues](https://github.com/AntonioIonica/the-wild-cabin/issues) for a full list of proposed features (and known issues).
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+<!-- CONTRIBUTING -->
+## Contributing
+
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
+If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
+Don't forget to give the project a star! Thanks again!
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+### Top contributors:
+
+-
+
+<!-- LICENSE -->
+## License
+
+Distributed under the project_license. See `LICENSE.txt` for more information.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+<!-- CONTACT -->
+## Contact
+
+Your Name - [@X](https://twitter.com/AntonioIonica) - antonioionica@gmail.com
+
+Project Link: [Github](https://github.com/AntonioIonica/the-wild-cabin)
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+<!-- ACKNOWLEDGMENTS -->
+## Acknowledgments
+
+* [The code and the instructions were provided by James Schmedtmann as the code is owned by him, made public only for learning purpose. James Schmedtman X account](https://x.com/jonasschmedtman)
+
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+[contributors-shield]: https://img.shields.io/github/contributors/AntonioIonica/the-wild-cabin.svg?style=for-the-badge
+[contributors-url]: https://github.com/AntonioIonica/the-wild-cabin/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/AntonioIonica/the-wild-cabin.svg?style=for-the-badge
+[forks-url]: https://github.com/AntonioIonica/the-wild-cabin/network/members
+[stars-shield]: https://img.shields.io/github/stars/AntonioIonica/the-wild-cabin.svg?style=for-the-badge
+[stars-url]: https://github.com/AntonioIonica/the-wild-cabin/stargazers
+[issues-shield]: https://img.shields.io/github/issues/AntonioIonica/the-wild-cabin.svg?style=for-the-badge
+[issues-url]: https://github.com/AntonioIonica/forkify-restaurant-boilerplate/issues
+[license-shield]: https://img.shields.io/github/license/AntonioIonica/the-wild-cabin.svg?style=for-the-badge
+[license-url]: https://github.com/AntonioIonica/the-wild-cabin/blob/master/LICENSE.txt
+[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
+[linkedin-url]: https://linkedin.com/in/antonio-iulian-ionica-478074353/
+[product-screenshot]: ./public/project_screenshot.png
+<!-- Shields.io badges. You can a comprehensive list with many more badges at: https://github.com/inttter/md-badges -->
+[react.dev]: https://img.shields.io/badge/React-%2320232a.svg?logo=react&logoColor=%2361DAFB
+[React-url]: https://react.dev 
+[supabase.com]: https://img.shields.io/badge/Supabase-3FCF8E?logo=supabase&logoColor=fff
+[Supabase-url]: https://supabase.com
+[Recharts-url]: https://recharts.github.io
+[styled-components.com]: https://img.shields.io/badge/styled--components-DB7093?logo=styledcomponents&logoColor=fff
+[Styled Components-url]: https://styled-components.com
+[vite.dev]: https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=fff
+[Vite-url]: https://vite.dev
