@@ -21,6 +21,7 @@ const ThemeSwitcher = () => {
     setMounted(true);
   }, []);
 
+  // Guard clause to show the UI only after initial mount-ready client
   if (!mounted) {
     return null;
   }
