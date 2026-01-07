@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import { Montserrat } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import "./globals.css";
+import Navbar from "@/components/NavBar";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -13,8 +14,8 @@ export const metadata: Metadata = {
   description: "Your dose of workout. Everyday. Everywhere.",
 };
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const montserratSans = Montserrat({
+  variable: "--font-montserrat-sans",
   display: "swap",
   subsets: ["latin"],
 });
@@ -26,14 +27,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.className} antialiased`}>
+      <body className={`${montserratSans.className} antialiased`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <Navbar>{children}</Navbar>
         </ThemeProvider>
       </body>
     </html>
