@@ -66,3 +66,11 @@
     @apply bg-background text-foreground;
   }
 }
+
+@theme {
+  --color-daily-border: border-image: linear-gradient(to right, red, blue) 1;
+}
+
+.navbar-links {
+  @apply border-b-2 border-b-foreground
+}
