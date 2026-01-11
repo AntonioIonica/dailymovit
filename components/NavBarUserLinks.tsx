@@ -11,8 +11,8 @@ export default async function NavBarUserLinks() {
 
   return (
     <>
-      <Link className="navbar-links animate-bounce" href={"/daily-mov/:userId"}>
-        Today Mov
+      <Link className="navbar-links animate-bounce" href={"/movs/:id"}>
+        Start Workout
       </Link>
       <Link className="navbar-links" href={"/leaderboard"}>
         Leaderboard
