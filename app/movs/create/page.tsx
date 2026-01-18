@@ -11,9 +11,9 @@ export default function CreateMov() {
   });
   const [exercises, setExercises] = useState([
     {
-      exerciseName: "",
+      exerciseName: "New exercise",
       duration: 0,
-      sets: [{ reps: 0, duration: 0, rest_time: 0 }],
+      sets: [{ reps: 1, duration: 0, rest_time: 0, set_number: 1 }],
     },
   ]);
   const [activeExercise, setActiveExercise] = useState(0);
@@ -36,16 +36,23 @@ export default function CreateMov() {
     setExercises([
       ...exercises,
       {
-        exerciseName: "",
+        exerciseName: "New exercise",
         duration: 0,
-        sets: [{ reps: 0, duration: 0, rest_time: 0 }],
+        sets: [{ reps: 1, duration: 0, rest_time: 0, set_number: 1 }],
       },
     ]);
+    setActiveExercise(prev => prev + 1);
+    setActiveSet(0);
   }
 
   function deleteExercise(exerciseIndex: number) {
     const exercisesField = [...exercises];
-    exercisesField.splice(exerciseIndex, 1);
+    if (exercisesField.length > 1) {
+      exercisesField.splice(exerciseIndex, 1);
+      if (activeExercise > 0) {
+        setActiveExercise(prev => prev - 1);
+      }
+    };
     setExercises(exercisesField);
   }
 
@@ -64,16 +71,23 @@ export default function CreateMov() {
   function addSet(exerciseIndex: number) {
     const exercisesField = [...exercises];
     exercisesField[exerciseIndex].sets.push({
-      reps: 0,
+      reps: 1,
       duration: 0,
       rest_time: 0,
+      set_number: exercisesField[exerciseIndex].sets[activeSet].set_number + 1
     });
     setExercises(exercisesField);
+    setActiveSet(prev => prev + 1);
   }
 
   function deleteSet(exerciseIndex: number, setIndex: number) {
     const exercisesField = [...exercises];
-    exercisesField[exerciseIndex].sets.splice(setIndex, 1);
+    if (exercisesField[exerciseIndex].sets.length > 1) {
+      exercisesField[exerciseIndex].sets.splice(setIndex, 1);
+      if (activeSet > 0) {
+        setActiveSet(prev => prev - 1);
+      };
+    }
     setExercises(exercisesField);
   }
 
@@ -87,7 +101,7 @@ export default function CreateMov() {
 
   function decrementRep() {
     const exercisesField = [...exercises];
-    if (exercisesField[activeExercise].sets[activeSet].reps > 0) {
+    if (exercisesField[activeExercise].sets[activeSet].reps > 1) {
       exercisesField[activeExercise].sets[activeSet].reps -= 1;
     }
     setExercises(exercisesField);
@@ -97,7 +111,7 @@ export default function CreateMov() {
     <div className="container flex flex-col">
       <div className="flex">
         {/* Side form */}
-        <div className="flex-1">
+        <div className="flex-1 items-center mt-10">
           <form action={submitMovAction}>
             <label htmlFor="workoutName">Workout name</label>
             <input
@@ -128,15 +142,6 @@ export default function CreateMov() {
                   {exercise.sets.map((set, setIndex) => (
                     <div key={setIndex} className="containerSet">
                       <div className="wrapperSet">
-                        <input
-                          type="range"
-                          value={set.reps}
-                          min={1}
-                          max={30}
-                          onChange={(e) =>
-                            handleSetRep(exerciseIndex, setIndex, e)
-                          }
-                        />
                         <button
                           type="button"
                           onClick={() => deleteSet(exerciseIndex, setIndex)}
@@ -166,21 +171,34 @@ export default function CreateMov() {
         </div>
 
         {/* Central console */}
-        <div className="flex-2 flex-col w-[50%]">
-          <div className="flex flex-col">
+        <div className="flex-2 flex-col w-[50%] mt-10">
+          <div className="flex flex-col items-center">
             <div>{exercises[activeExercise].exerciseName.toUpperCase()}</div>
-            <div className="flex items-center justify-center text-9xl">
-              {exercises[activeExercise].sets[activeSet].reps}
+            <div>{ }</div>
+            <div className="flex justify-center items-center">
+              <button className="flex items-center justify-center text-7xl" onClick={decrementRep}>-</button>
+              <div className="flex items-center justify-center text-9xl p-10 w-[15rem]">
+                {exercises[activeExercise].sets[activeSet].reps}
+              </div>
+              <button className="flex items-center justify-center text-7xl" onClick={incrementRep}>+</button>
             </div>
-            <div className="flex justify-center items-center space-x-4">
-              <button onClick={decrementRep}>-</button>
-              <button onClick={incrementRep}>+</button>
-            </div>
+            <input
+              type="range"
+              value={exercises[activeExercise].sets[activeSet].reps}
+              onChange={(e) => handleSetRep(activeExercise, activeSet, e)}
+              min={1}
+              max={30}
+              className="scale-[250%]"
+            />
+            <button onClick={() => addSet(activeExercise)} type="button" className="mt-10 rounded-md border-slate-300 
+            px-3 py-2 text-black bg-slate-100">Finish set</button>
+            <button onClick={addExercise} type="button" className="mt-10 rounded-md border-slate-300 
+            px-3 py-2 text-black bg-slate-100">Finish exercise</button>
           </div>
-        </div>
 
+        </div>
         {/* Charts */}
-        <div className="flex-1 flex-col"></div>
+        <div className="flex-1 flex-col mt-10"></div>
       </div>
     </div>
   );
