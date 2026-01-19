@@ -1,7 +1,7 @@
 "use client";
 
-import { submitMovAction } from "@/app/actions";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { FormEvent, useState } from "react";
 
 export default function CreateMov() {
   const [workout, setWorkout] = useState({
@@ -18,6 +18,7 @@ export default function CreateMov() {
   ]);
   const [activeExercise, setActiveExercise] = useState(0);
   const [activeSet, setActiveSet] = useState(0);
+  const router = useRouter();
 
   function handleWorkoutName(event: { target: { value: string } }) {
     setWorkout({ ...workout, name: event.target.value });
@@ -103,16 +104,35 @@ export default function CreateMov() {
     const exercisesField = [...exercises];
     if (exercisesField[activeExercise].sets[activeSet].reps > 1) {
       exercisesField[activeExercise].sets[activeSet].reps -= 1;
-    }
+    };
     setExercises(exercisesField);
   }
+
+  const handleFinishWorkout = async (event: FormEvent) => {
+    event.preventDefault();
+
+    const workoutValues = {
+      workout,
+      exercises
+    };
+
+    const res = await fetch('/api/workouts', {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(workoutValues)
+    });
+
+    const result = await res.json();
+    console.log(result);
+    router.push(`/movs/${result.userId}`);
+  };
 
   return (
     <div className="container flex flex-col">
       <div className="flex">
         {/* Side form */}
         <div className="flex-1 items-center mt-10">
-          <form action={submitMovAction}>
+          <form onSubmit={handleFinishWorkout}>
             <label htmlFor="workoutName">Workout name</label>
             <input
               id="workoutName"
@@ -167,6 +187,10 @@ export default function CreateMov() {
             <button type="button" onClick={addExercise}>
               Add Exercise
             </button>
+            <div className="flex justify-center">
+              <button type="submit" className="mt-10 rounded-md border-slate-300 
+            px-3 py-2 text-black bg-slate-100">Finish Workout</button>
+            </div>
           </form>
         </div>
 

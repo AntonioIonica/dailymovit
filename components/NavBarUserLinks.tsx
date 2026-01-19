@@ -17,7 +17,7 @@ export default async function NavBarUserLinks() {
       <Link className="navbar-links" href={"/leaderboard"}>
         Leaderboard
       </Link>
-      <Link className="navbar-links" href={"/movs/:userId"}>
+      <Link className="navbar-links" href={`/movs/${user.sub}`}>
         My Movs
       </Link>
     </>
