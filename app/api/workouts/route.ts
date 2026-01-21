@@ -7,7 +7,6 @@ type setType = {
     rest_time: number,
     set_number: number,
     weight: number,
-    notes: string,
     rpe: number
     userId: string
 }
@@ -42,6 +41,7 @@ export async function POST(req: NextRequest) {
         const { data: exerciseData, error: exerciseError } = await (await supabase).from("exercises").insert({
             workout_id: workoutId,
             name: exercise.exerciseName,
+            notes: exercise.notes,
             user_id: user.id
         }).select("id").single();
         if (exerciseError) return NextResponse.json({ error: exerciseError }, { status: 500 });
@@ -54,7 +54,6 @@ export async function POST(req: NextRequest) {
             duration: s.duration,
             weight: s.weight,
             rest_time: s.rest_time,
-            notes: s.notes,
             rpe: s.rpe,
             user_id: user.id
         }));

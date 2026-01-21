@@ -12,7 +12,8 @@ export default function CreateMov() {
   const [exercises, setExercises] = useState([
     {
       exerciseName: "New exercise",
-      sets: [{ reps: 1, duration: 0, rest_time: 0, set_number: 1, weight: 0, notes: '', rpe: 1 }],
+      notes: "",
+      sets: [{ reps: 1, duration: 0, rest_time: 0, set_number: 1, weight: 0, rpe: 1 }],
     },
   ]);
   const [activeExercise, setActiveExercise] = useState(0);
@@ -37,7 +38,8 @@ export default function CreateMov() {
       ...exercises,
       {
         exerciseName: "New exercise",
-        sets: [{ reps: 1, duration: 0, rest_time: 0, set_number: 1, weight: 0, notes: '', rpe: 1 }],
+        notes: "",
+        sets: [{ reps: 1, duration: 0, rest_time: 0, set_number: 1, weight: 0, rpe: 1 }],
       },
     ]);
     setActiveExercise(prev => prev + 1);
@@ -75,7 +77,6 @@ export default function CreateMov() {
       rest_time: 0,
       set_number: exercisesField[exerciseIndex].sets[activeSet].set_number + 1,
       weight: 0,
-      notes: '',
       rpe: 1
     });
     setExercises(exercisesField);
@@ -107,6 +108,18 @@ export default function CreateMov() {
       exercisesField[activeExercise].sets[activeSet].reps -= 1;
     };
     setExercises(exercisesField);
+  }
+
+  function handleSetWeight(activeExercise: number, activeSet: number, event: { target: { value: string } }): void {
+    const exerciseField = [...exercises];
+    exerciseField[activeExercise].sets[activeSet].weight = +event.target.value;
+    setExercises(exerciseField);
+  }
+
+  function handleSetNotes(activeExercise: number, event: { target: { value: string } }) {
+    const exerciseField = [...exercises];
+    exerciseField[activeExercise].notes = event.target.value;
+    setExercises(exerciseField);
   }
 
   const handleFinishWorkout = async (event: FormEvent) => {
@@ -164,7 +177,8 @@ export default function CreateMov() {
                   />
                   {exercise.sets.map((set, setIndex) => (
                     <div key={setIndex} className="containerSet">
-                      <div className="wrapperSet">
+                      <div className="wrapperSet flex space-x-4">
+                        <div>{set.set_number}</div>
                         <button
                           type="button"
                           onClick={() => deleteSet(exerciseIndex, setIndex)}
@@ -200,8 +214,11 @@ export default function CreateMov() {
         {/* Central console */}
         <div className="flex-2 flex-col w-[50%] mt-10">
           <div className="flex flex-col items-center">
-            <div>{exercises[activeExercise].exerciseName.toUpperCase()}</div>
-            <div>{ }</div>
+            <div className="border-4 border-solid rounded-md border-primary">
+              <input type="text" value={exercises[activeExercise].exerciseName}
+                onChange={(e) => handleExerciseName(activeExercise, e)}
+                className="text-center py-2 text-lg" />
+            </div>
             <div className="flex justify-center items-center">
               <button className="flex items-center justify-center text-7xl" onClick={decrementRep}>-</button>
               <div className="flex items-center justify-center text-9xl p-10 w-[15rem]">
@@ -217,10 +234,24 @@ export default function CreateMov() {
               max={30}
               className="scale-[250%]"
             />
-            <button onClick={() => addSet(activeExercise)} type="button" className="mt-10 rounded-md border-slate-300 
+            <div className="flex space-x-8 items-center mt-14">
+              <div>stars RPE</div>
+              <button onClick={() => addSet(activeExercise)} type="button" className="rounded-md border-slate-300 
             px-3 py-2 text-black bg-slate-100">Finish set</button>
-            <button onClick={addExercise} type="button" className="mt-10 rounded-md border-slate-300 
+              <span className="flex flex-col"><input className="max-w-16 flex items-center" type='number'
+                value={exercises[activeExercise].sets[activeSet].weight}
+                placeholder="KG/LB" onChange={(e) => handleSetWeight(activeExercise, activeSet, e)}
+                min={0}
+                max={1000}
+              />Kgs/Lbs</span>
+            </div>
+
+
+            <div className="flex mt-8 items-center space-between">
+              <div><textarea onChange={(e) => handleSetNotes(activeExercise, e)} placeholder="Notes..." maxLength={100} /></div>
+              <button onClick={addExercise} type="button" className="mt-10 rounded-md border-slate-300 
             px-3 py-2 text-black bg-slate-100">Finish exercise</button>
+            </div>
           </div>
 
         </div>
