@@ -12,8 +12,7 @@ export default function CreateMov() {
   const [exercises, setExercises] = useState([
     {
       exerciseName: "New exercise",
-      duration: 0,
-      sets: [{ reps: 1, duration: 0, rest_time: 0, set_number: 1 }],
+      sets: [{ reps: 1, duration: 0, rest_time: 0, set_number: 1, weight: 0, notes: '', rpe: 1 }],
     },
   ]);
   const [activeExercise, setActiveExercise] = useState(0);
@@ -38,8 +37,7 @@ export default function CreateMov() {
       ...exercises,
       {
         exerciseName: "New exercise",
-        duration: 0,
-        sets: [{ reps: 1, duration: 0, rest_time: 0, set_number: 1 }],
+        sets: [{ reps: 1, duration: 0, rest_time: 0, set_number: 1, weight: 0, notes: '', rpe: 1 }],
       },
     ]);
     setActiveExercise(prev => prev + 1);
@@ -75,7 +73,10 @@ export default function CreateMov() {
       reps: 1,
       duration: 0,
       rest_time: 0,
-      set_number: exercisesField[exerciseIndex].sets[activeSet].set_number + 1
+      set_number: exercisesField[exerciseIndex].sets[activeSet].set_number + 1,
+      weight: 0,
+      notes: '',
+      rpe: 1
     });
     setExercises(exercisesField);
     setActiveSet(prev => prev + 1);
@@ -124,7 +125,9 @@ export default function CreateMov() {
 
     const result = await res.json();
     console.log(result);
-    router.push(`/movs/${result.userId}`);
+    if (result.userId) {
+      router.push(`/movs/${result.userId}`);
+    }
   };
 
   return (
