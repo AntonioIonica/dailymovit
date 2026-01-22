@@ -27,15 +27,15 @@ export default function CreateMov() {
     };
 
     if (dialogRef.current.hasAttribute("open")) {
-      dialogRef.current.close()
+      dialogRef.current.close();
     } else {
-      dialogRef.current.showModal()
-    }
-  }
+      dialogRef.current.showModal();
+    };
+  };
 
   function handleWorkoutName(event: { target: { value: string } }) {
     setWorkout({ ...workout, name: event.target.value });
-  }
+  };
 
   function handleExerciseName(
     index: number,
@@ -44,7 +44,7 @@ export default function CreateMov() {
     const exercisesField = [...exercises];
     exercisesField[index].exerciseName = event.target.value;
     setExercises(exercisesField);
-  }
+  };
 
   function addExercise() {
     setExercises([
@@ -57,7 +57,7 @@ export default function CreateMov() {
     ]);
     setActiveExercise(prev => prev + 1);
     setActiveSet(0);
-  }
+  };
 
   function deleteExercise(exerciseIndex: number) {
     const exercisesField = [...exercises];
@@ -65,10 +65,10 @@ export default function CreateMov() {
       exercisesField.splice(exerciseIndex, 1);
       if (activeExercise > 0) {
         setActiveExercise(prev => prev - 1);
-      }
+      };
     };
     setExercises(exercisesField);
-  }
+  };
 
   function handleSetRep(
     exerciseIndex: number,
@@ -80,7 +80,7 @@ export default function CreateMov() {
     const exercisesField = [...exercises];
     exercisesField[exerciseIndex].sets[setIndex].reps = +event.target.value;
     setExercises(exercisesField);
-  }
+  };
 
   function addSet(exerciseIndex: number) {
     const exercisesField = [...exercises];
@@ -94,7 +94,7 @@ export default function CreateMov() {
     });
     setExercises(exercisesField);
     setActiveSet(prev => prev + 1);
-  }
+  };
 
   function deleteSet(exerciseIndex: number, setIndex: number) {
     const exercisesField = [...exercises];
@@ -105,15 +105,15 @@ export default function CreateMov() {
       };
     }
     setExercises(exercisesField);
-  }
+  };
 
   function incrementRep() {
     const exercisesField = [...exercises];
     if (exercisesField[activeExercise].sets[activeSet].reps < 30) {
       exercisesField[activeExercise].sets[activeSet].reps += 1;
-    }
+    };
     setExercises(exercisesField);
-  }
+  };
 
   function decrementRep() {
     const exercisesField = [...exercises];
@@ -121,19 +121,25 @@ export default function CreateMov() {
       exercisesField[activeExercise].sets[activeSet].reps -= 1;
     };
     setExercises(exercisesField);
-  }
+  };
 
   function handleSetWeight(activeExercise: number, activeSet: number, event: { target: { value: string } }): void {
     const exerciseField = [...exercises];
     exerciseField[activeExercise].sets[activeSet].weight = +event.target.value;
     setExercises(exerciseField);
-  }
+  };
 
   function handleSetNotes(activeExercise: number, event: { target: { value: string } }) {
     const exerciseField = [...exercises];
     exerciseField[activeExercise].notes = event.target.value;
     setExercises(exerciseField);
-  }
+  };
+
+  function handleSetRpe(activeExercise: number, activeSet: number, event: { target: { value: string } }): void {
+    const exerciseField = [...exercises];
+    exerciseField[activeExercise].sets[activeSet].rpe = +event.target.value;
+    setExercises(exerciseField);
+  };
 
   const handleFinishWorkout = async (event: FormEvent) => {
     event.preventDefault();
@@ -153,7 +159,7 @@ export default function CreateMov() {
     console.log(result);
     if (result.userId) {
       router.push(`/movs/${result.userId}`);
-    }
+    };
   };
 
   return (
@@ -248,7 +254,11 @@ export default function CreateMov() {
               className="scale-[250%]"
             />
             <div className="flex space-x-8 items-center mt-14">
-              <div>stars RPE</div>
+              <div className="flex flex-col space-y-2 items-center">
+                <input type="range" className="w-16"
+                  value={exercises[activeExercise].sets[activeSet].rpe} min={1} max={10} onChange={(e) => handleSetRpe(activeExercise, activeSet, e)} />
+                {exercises[activeExercise].sets[activeSet].rpe}
+              </div>
               <button onClick={() => addSet(activeExercise)} type="button" className="rounded-md border-slate-300 
             px-3 py-2 text-black bg-slate-100">Finish set</button>
               <span className="flex flex-col"><input className="max-w-16 flex items-center" type='number'
@@ -265,11 +275,14 @@ export default function CreateMov() {
               {/* Dialog for exercise notes */}
               <div className="absolute top-0 left-[50%]">
                 <dialog className="rounded-md" ref={dialogRef} onClick={(e) => {
-                  if (e.currentTarget === e.target) { toggleDialog(); };
+                  if (e.currentTarget === e.target) {
+                    toggleDialog()
+                  };
                 }}>
                   <div className="flex flex-col items-center space-y-6 px-6 py-4">
                     <div>How was your exercise?</div>
-                    <textarea onChange={(e) => handleSetNotes(activeExercise, e)} placeholder="Notes..." maxLength={100} />
+                    <textarea onChange={(e) => handleSetNotes(activeExercise, e)} placeholder="Notes..." maxLength={100}
+                      value={exercises[activeExercise].notes} />
                     <button type="button" onClick={toggleDialog}>Close</button>
                   </div>
                 </dialog>
