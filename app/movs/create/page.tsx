@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { FormEvent, useState } from "react";
+import { FormEvent, useRef, useState } from "react";
 
 export default function CreateMov() {
   const [workout, setWorkout] = useState({
@@ -19,6 +19,19 @@ export default function CreateMov() {
   const [activeExercise, setActiveExercise] = useState(0);
   const [activeSet, setActiveSet] = useState(0);
   const router = useRouter();
+  const dialogRef = useRef<HTMLDialogElement>(null);
+
+  function toggleDialog() {
+    if (!dialogRef.current) {
+      return;
+    };
+
+    if (dialogRef.current.hasAttribute("open")) {
+      dialogRef.current.close()
+    } else {
+      dialogRef.current.showModal()
+    }
+  }
 
   function handleWorkoutName(event: { target: { value: string } }) {
     setWorkout({ ...workout, name: event.target.value });
@@ -247,9 +260,22 @@ export default function CreateMov() {
             </div>
 
 
-            <div className="flex mt-8 items-center space-between">
-              <div><textarea onChange={(e) => handleSetNotes(activeExercise, e)} placeholder="Notes..." maxLength={100} /></div>
-              <button onClick={addExercise} type="button" className="mt-10 rounded-md border-slate-300 
+            <div className="flex mt-4 space-x-4">
+              <button type="button" onClick={toggleDialog}>Add note</button>
+              {/* Dialog for exercise notes */}
+              <div className="absolute top-0 left-[50%]">
+                <dialog className="rounded-md" ref={dialogRef} onClick={(e) => {
+                  if (e.currentTarget === e.target) { toggleDialog(); };
+                }}>
+                  <div className="flex flex-col items-center space-y-6 px-6 py-4">
+                    <div>How was your exercise?</div>
+                    <textarea onChange={(e) => handleSetNotes(activeExercise, e)} placeholder="Notes..." maxLength={100} />
+                    <button type="button" onClick={toggleDialog}>Close</button>
+                  </div>
+                </dialog>
+              </div>
+
+              <button onClick={addExercise} type="button" className="rounded-md border-slate-300 
             px-3 py-2 text-black bg-slate-100">Finish exercise</button>
             </div>
           </div>

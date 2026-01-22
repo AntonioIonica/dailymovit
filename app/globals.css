@@ -74,3 +74,9 @@
 .navbar-links {
   @apply border-b-2 border-b-foreground
 }
+
+dialog::backdrop {
+  background-color: rgba(144, 122, 122, 0.3);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
