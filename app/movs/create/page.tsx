@@ -156,10 +156,21 @@ export default function CreateMov() {
     });
 
     const result = await res.json();
-    console.log(result);
     if (result.userId) {
       router.push(`/movs/${result.userId}`);
     };
+    setWorkout({
+      name: "New Workout",
+      duration: 0,
+      public: true,
+    });
+    setExercises([
+      {
+        exerciseName: "New exercise",
+        notes: "",
+        sets: [{ reps: 1, duration: 0, rest_time: 0, set_number: 1, weight: 0, rpe: 1 }],
+      },
+    ]);
   };
 
   return (
