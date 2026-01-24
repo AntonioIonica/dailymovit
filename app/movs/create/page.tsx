@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { FormEvent, useRef, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 
 export default function CreateMov() {
   const [workout, setWorkout] = useState({
@@ -16,10 +16,27 @@ export default function CreateMov() {
       sets: [{ reps: 1, duration: 0, rest_time: 0, set_number: 1, weight: 0, rpe: 1 }],
     },
   ]);
-  const [activeExercise, setActiveExercise] = useState(0);
-  const [activeSet, setActiveSet] = useState(0);
+  const [activeExercise, setActiveExercise] = useState<number>(0);
+  const [activeSet, setActiveSet] = useState<number>(0);
   const router = useRouter();
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const [workDuration, setWorkDuration] = useState<number>(0);
+  const [restDuration, setRestDuration] = useState<number>(0);
+  const [isRunning, setIsRunning] = useState<boolean>(false);
+  const [isBreak, setIsBreak] = useState<boolean>(false);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      if (!isBreak && isRunning) {
+        setWorkDuration(prev => prev + 1);
+      };
+      if (isBreak && !isRunning) {
+        setRestDuration(prev => prev + 1);
+      };
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [isBreak, isRunning]);
 
   function toggleDialog() {
     if (!dialogRef.current) {
@@ -141,11 +158,29 @@ export default function CreateMov() {
     setExercises(exerciseField);
   };
 
+  function handleTimer() {
+    if (isRunning) {
+      setIsBreak(true);
+      setIsRunning(false);
+    } else {
+      setIsRunning(true);
+      setIsBreak(false);
+    };
+  };
+
   const handleFinishWorkout = async (event: FormEvent) => {
     event.preventDefault();
+    // Get the sum of all the sets duration from all the exercises
+    const workDurationSets = exercises.reduce(
+      (sum, exercise) => sum + exercise.sets.reduce(
+        (setSum, set) => setSum + set.duration, 0), 0);
+    const restTimeSets = exercises.reduce(
+      (sum, exercise) => sum + exercise.sets.reduce(
+        (setSum, set) => setSum + set.rest_time, 0), 0);
+    const workoutField = { ...workout, duration: workDurationSets + restTimeSets };
 
     const workoutValues = {
-      workout,
+      workoutField,
       exercises
     };
 
@@ -231,9 +266,6 @@ export default function CreateMov() {
                 </div>
               </div>
             ))}
-            <button type="button" onClick={addExercise}>
-              Add Exercise
-            </button>
             <div className="flex justify-center">
               <button type="submit" className="mt-10 rounded-md border-slate-300 
             px-3 py-2 text-black bg-slate-100">Finish Workout</button>
@@ -249,12 +281,13 @@ export default function CreateMov() {
                 onChange={(e) => handleExerciseName(activeExercise, e)}
                 className="text-center py-2 text-lg" />
             </div>
+            <div>{isRunning ? workDuration : restDuration}</div><button onClick={handleTimer}>{!isRunning ? "Start" : "Pause"}</button>
             <div className="flex justify-center items-center">
-              <button className="flex items-center justify-center text-7xl" onClick={decrementRep}>-</button>
-              <div className="flex items-center justify-center text-9xl p-10 w-[15rem]">
+              <button className="flex items-center justify-center text-4xl" onClick={decrementRep}>-</button>
+              <div className="flex items-center justify-center text-7xl p-10 w-[15rem]">
                 {exercises[activeExercise].sets[activeSet].reps}
               </div>
-              <button className="flex items-center justify-center text-7xl" onClick={incrementRep}>+</button>
+              <button className="flex items-center justify-center text-4xl" onClick={incrementRep}>+</button>
             </div>
             <input
               type="range"
