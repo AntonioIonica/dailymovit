@@ -25,6 +25,7 @@ export default function CreateMov() {
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [isBreak, setIsBreak] = useState<boolean>(false);
 
+
   useEffect(() => {
     let timer: NodeJS.Timeout;
 
@@ -85,26 +86,25 @@ export default function CreateMov() {
   };
 
   function addExercise() {
-    setExercises([
-      ...exercises,
-      {
-        exerciseName: "New exercise",
-        notes: "",
-        sets: [{ reps: 1, duration: 0, rest_time: 0, set_number: 1, weight: 0, rpe: 1 }],
-      },
-    ]);
-    setActiveExercise(prev => prev + 1);
-    initialTimer();
+    const exercisesField = [...exercises];
+    exercisesField[activeExercise].sets[activeSet].duration = workDuration;
+    exercisesField[activeExercise].sets[activeSet].rest_time = restDuration;
+    exercisesField.push({
+      exerciseName: "New exercise",
+      notes: "",
+      sets: [{ reps: 1, duration: 0, rest_time: 0, set_number: 1, weight: 0, rpe: 1 }],
+    });
+    setExercises(exercisesField);
+    setActiveExercise(exercisesField.length - 1);
     setActiveSet(0);
+    initialTimer();
   };
 
   function deleteExercise(exerciseIndex: number) {
     const exercisesField = [...exercises];
     if (exercisesField.length > 1) {
       exercisesField.splice(exerciseIndex, 1);
-      if (activeExercise > 0) {
-        setActiveExercise(prev => prev - 1);
-      };
+      setActiveExercise(exercisesField.length - 1);
     };
     initialTimer();
     setExercises(exercisesField);
@@ -124,14 +124,17 @@ export default function CreateMov() {
 
   function addSet(exerciseIndex: number) {
     const exercisesField = [...exercises];
-    exercisesField[activeExercise].sets[activeSet].duration = workDuration || 0;
-    exercisesField[activeExercise].sets[activeSet].rest_time = restDuration || 0;
+    exercisesField[activeExercise].sets[activeSet].duration = workDuration;
+    exercisesField[activeExercise].sets[activeSet].rest_time = restDuration;
+
+    // Last set
+    const lastSetNumber = exercisesField[exerciseIndex].sets[exercisesField[exerciseIndex].sets.length - 1].set_number || 0;
 
     exercisesField[exerciseIndex].sets.push({
       reps: 1,
       duration: 0,
       rest_time: 0,
-      set_number: exercisesField[exerciseIndex].sets[activeSet].set_number + 1,
+      set_number: lastSetNumber + 1,
       weight: 0,
       rpe: 1
     });
@@ -145,7 +148,7 @@ export default function CreateMov() {
     const exercisesField = [...exercises];
     if (exercisesField[exerciseIndex].sets.length > 1) {
       exercisesField[exerciseIndex].sets.splice(setIndex, 1);
-      if (activeSet > 0) {
+      if (activeSet >= exercises[activeExercise].sets.length) {
         setActiveSet(prev => prev - 1);
       };
     }
@@ -203,18 +206,25 @@ export default function CreateMov() {
 
   const handleFinishWorkout = async (event: FormEvent) => {
     event.preventDefault();
-    // Get the sum of all the sets duration from all the exercises
-    const workDurationSets = exercises.reduce(
-      (sum, exercise) => sum + exercise.sets.reduce(
-        (setSum, set) => setSum + set.duration, 0), 0);
-    const restTimeSets = exercises.reduce(
-      (sum, exercise) => sum + exercise.sets.reduce(
-        (setSum, set) => setSum + set.rest_time, 0), 0);
-    const workoutField = { ...workout, duration: workDurationSets + restTimeSets };
 
+    const workoutField = { ...workout };
+    const exercisesField = [...exercises];
+    exercisesField[activeExercise].sets[activeSet].duration = workDuration;
+    exercisesField[activeExercise].sets[activeSet].rest_time = restDuration; 
+
+    // Get the sum of all the sets duration from all the exercises
+    const workDurationSets = exercisesField.reduce(
+      (sum, exercise) => sum + exercise.sets.reduce(
+        (setSum, set) => setSum + Number(set.duration), 0), 0);
+    const restTimeSets = exercisesField.reduce(
+      (sum, exercise) => sum + exercise.sets.reduce(
+        (setSum, set) => setSum + Number(set.rest_time), 0), 0);
+
+    workoutField.duration = workDurationSets + restTimeSets;
+    setWorkout(workoutField);
     const workoutValues = {
-      workoutField,
-      exercises
+      workout: workoutField,
+      exercises: exercisesField
     };
 
     const res = await fetch('/api/workouts', {
@@ -223,10 +233,7 @@ export default function CreateMov() {
       body: JSON.stringify(workoutValues)
     });
 
-    const result = await res.json();
-    if (result.userId) {
-      router.push(`/movs/${result.userId}`);
-    };
+
     setWorkout({
       name: "New Workout",
       duration: 0,
@@ -239,15 +246,24 @@ export default function CreateMov() {
         sets: [{ reps: 1, duration: 0, rest_time: 0, set_number: 1, weight: 0, rpe: 1 }],
       },
     ]);
+    setActiveExercise(0);
+    setActiveSet(0);
+    initialTimer();
+    const result = await res.json();
+    if (result.userId) {
+      router.push(`/movs/${result.userId}`);
+    };
+
+
   };
 
   return (
-    <div className="container flex flex-col">
-      <div className="flex">
+    <div className="container flex flex-col max-h-screen">
+      <div className="flex max-h-max">
         {/* Side form */}
-        <div className="flex-1 items-center mt-10">
-          <form onSubmit={handleFinishWorkout}>
-            <label htmlFor="workoutName">Workout name</label>
+        <div className="flex-1 items-center mt-10 mb-10 overflow-y-auto">
+          <form onSubmit={handleFinishWorkout} className="space-y-1">
+            <label htmlFor="workoutName">Workout name: </label>
             <input
               id="workoutName"
               name="workoutName"
@@ -257,15 +273,20 @@ export default function CreateMov() {
               placeholder="New workout"
               onChange={(e) => handleWorkoutName(e)}
             />
-            <label htmlFor="publicCheckbox">Public workout</label>
-            <input
-              id="publicCheckbox"
-              name="publicCheckbox"
-              type="checkBox"
-              defaultChecked={true}
-            />
+            <div className="flex">
+              <label htmlFor="publicCheckbox">Public workout</label>
+              <input
+                id="publicCheckbox"
+                name="publicCheckbox"
+                type="checkBox"
+                className="m-auto"
+                defaultChecked={true}
+              />
+            </div>
+
             {exercises.map((exercise, exerciseIndex) => (
-              <div className="containerExercise" key={exerciseIndex}>
+              <div className={`containerExercise p-2 ${exerciseIndex == activeExercise ?
+                "border-solid border-2 rounded-sm border-primary" : ""}`} key={exerciseIndex}>
                 <div className="wrapperExercise">
                   <input
                     value={exercise.exerciseName}
@@ -274,7 +295,8 @@ export default function CreateMov() {
                     onChange={(e) => handleExerciseName(exerciseIndex, e)}
                   />
                   {exercise.sets.map((set, setIndex) => (
-                    <div key={setIndex} className="containerSet">
+                    <div key={setIndex} className={`containerSet ${setIndex == activeSet && exerciseIndex == activeExercise ?
+                      "border-solid border-2 rounded-sm border-primary" : ""}`}>
                       <div className="wrapperSet flex space-x-4">
                         <div>{set.set_number}</div>
                         <button
@@ -299,8 +321,8 @@ export default function CreateMov() {
                 </div>
               </div>
             ))}
-            <div className="flex justify-center">
-              <button type="submit" className="mt-10 rounded-md border-slate-300 
+            <div className="flex justify-center m-0">
+              <button type="submit" className="rounded-md border-slate-300 
             px-3 py-2 text-black bg-slate-100">Finish Workout</button>
             </div>
           </form>
@@ -355,7 +377,7 @@ export default function CreateMov() {
               <button onClick={() => addSet(activeExercise)} type="button" className="rounded-md border-slate-300 
             px-3 py-2 text-black bg-slate-100">Finish set</button>
               <span className="flex flex-col"><input className="max-w-16 flex items-center" type='number'
-                value={exercises[activeExercise].sets[activeSet].weight}
+                value={exercises[activeExercise]?.sets[activeSet]?.weight}
                 placeholder="KG/LB" onChange={(e) => handleSetWeight(activeExercise, activeSet, e)}
                 min={0}
                 max={1000}

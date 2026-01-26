@@ -13,15 +13,12 @@ type setType = {
 
 export async function POST(req: NextRequest) {
     const supabase = createClient();
-
     const body = await req.json();
 
     const { data: { user } } = await (await supabase).auth.getUser();
-
     if (!user) {
         return NextResponse.json({ error: "The user is not authorized" }, { status: 401 })
     };
-
 
     // Workouts
     const { data: workoutData, error: workoutError } = await (await supabase).from("workouts").insert({
