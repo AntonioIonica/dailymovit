@@ -26,17 +26,38 @@ export default function CreateMov() {
   const [isBreak, setIsBreak] = useState<boolean>(false);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      if (!isBreak && isRunning) {
-        setWorkDuration(prev => prev + 1);
-      };
-      if (isBreak && !isRunning) {
-        setRestDuration(prev => prev + 1);
-      };
-    }, 1000);
+    let timer: NodeJS.Timeout;
+
+    if (isRunning && !isBreak) {
+      timer = setTimeout(() => {
+        if (workDuration < 10000) {
+          setWorkDuration(prev => prev + 1);
+        };
+      }, 1000);
+    };
+
+    if (isBreak && !isRunning) {
+      timer = setTimeout(() => {
+        if (restDuration < 500) {
+          setRestDuration(prev => prev + 1);
+        };
+      }, 1000);
+    };
+
+    if (!isBreak && !isRunning) {
+      setWorkDuration(prev => prev);
+      setRestDuration(prev => prev);
+    }
 
     return () => clearInterval(timer);
-  }, [isBreak, isRunning]);
+  }, [isBreak, restDuration, isRunning, workDuration]);
+
+  function initialTimer() {
+    setIsBreak(false);
+    setIsRunning(false);
+    setWorkDuration(0);
+    setRestDuration(0);
+  }
 
   function toggleDialog() {
     if (!dialogRef.current) {
@@ -73,6 +94,7 @@ export default function CreateMov() {
       },
     ]);
     setActiveExercise(prev => prev + 1);
+    initialTimer();
     setActiveSet(0);
   };
 
@@ -84,6 +106,7 @@ export default function CreateMov() {
         setActiveExercise(prev => prev - 1);
       };
     };
+    initialTimer();
     setExercises(exercisesField);
   };
 
@@ -101,6 +124,9 @@ export default function CreateMov() {
 
   function addSet(exerciseIndex: number) {
     const exercisesField = [...exercises];
+    exercisesField[activeExercise].sets[activeSet].duration = workDuration || 0;
+    exercisesField[activeExercise].sets[activeSet].rest_time = restDuration || 0;
+
     exercisesField[exerciseIndex].sets.push({
       reps: 1,
       duration: 0,
@@ -109,8 +135,10 @@ export default function CreateMov() {
       weight: 0,
       rpe: 1
     });
+
     setExercises(exercisesField);
     setActiveSet(prev => prev + 1);
+    initialTimer();
   };
 
   function deleteSet(exerciseIndex: number, setIndex: number) {
@@ -158,14 +186,19 @@ export default function CreateMov() {
     setExercises(exerciseField);
   };
 
-  function handleTimer() {
-    if (isRunning) {
-      setIsBreak(true);
-      setIsRunning(false);
-    } else {
+  function handleStartTimer() {
+    if (!isRunning && !isBreak) {
       setIsRunning(true);
       setIsBreak(false);
-    };
+    }
+  };
+
+  function handleStopTimer() {
+    if (isRunning) {
+      setIsRunning(false);
+      if (workDuration != 0)
+        setIsBreak(true);
+    }
   };
 
   const handleFinishWorkout = async (event: FormEvent) => {
@@ -281,7 +314,23 @@ export default function CreateMov() {
                 onChange={(e) => handleExerciseName(activeExercise, e)}
                 className="text-center py-2 text-lg" />
             </div>
-            <div>{isRunning ? workDuration : restDuration}</div><button onClick={handleTimer}>{!isRunning ? "Start" : "Pause"}</button>
+
+            <div className="flex items-center justify-between w-[35%]">
+              <div className="flex flex-col">
+                <span>Work: {workDuration}</span>
+                <button disabled={isRunning} onClick={handleStartTimer}>
+                  Start
+                </button>
+              </div>
+
+              <div className="flex flex-col">
+                <span>Rest time: {restDuration}</span>
+                <button disabled={isBreak} onClick={handleStopTimer}>
+                  Take a break
+                </button>
+              </div>
+
+            </div>
             <div className="flex justify-center items-center">
               <button className="flex items-center justify-center text-4xl" onClick={decrementRep}>-</button>
               <div className="flex items-center justify-center text-7xl p-10 w-[15rem]">
