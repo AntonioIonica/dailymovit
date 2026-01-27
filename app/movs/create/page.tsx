@@ -253,16 +253,14 @@ export default function CreateMov() {
     if (result.userId) {
       router.push(`/movs/${result.userId}`);
     };
-
-
   };
 
   return (
     <div className="container flex flex-col max-h-screen">
       <div className="flex max-h-max">
         {/* Side form */}
-        <div className="flex-1 items-center mt-10 mb-10 overflow-y-auto">
-          <form onSubmit={handleFinishWorkout} className="space-y-1">
+        <div className="flex-1 items-center mt-10 mb-10 min-h-[78vh] overflow-y-auto bg-primary-foreground p-2">
+          <form onSubmit={handleFinishWorkout} className="space-y-1 w-full">
             <label htmlFor="workoutName">Workout name: </label>
             <input
               id="workoutName"
@@ -272,6 +270,7 @@ export default function CreateMov() {
               maxLength={25}
               placeholder="New workout"
               onChange={(e) => handleWorkoutName(e)}
+              className="w-full"
             />
             <div className="flex">
               <label htmlFor="publicCheckbox">Public workout</label>
@@ -287,49 +286,53 @@ export default function CreateMov() {
             {exercises.map((exercise, exerciseIndex) => (
               <div className={`containerExercise p-2 ${exerciseIndex == activeExercise ?
                 "border-solid border-2 rounded-sm border-primary" : ""}`} key={exerciseIndex}>
-                <div className="wrapperExercise">
+                <div className="wrapperExercise w-full flex flex-col">
                   <input
                     value={exercise.exerciseName}
                     type="text"
                     placeholder="Exercise name"
                     onChange={(e) => handleExerciseName(exerciseIndex, e)}
+                    className="w-full mb-1"
                   />
                   {exercise.sets.map((set, setIndex) => (
-                    <div key={setIndex} className={`containerSet ${setIndex == activeSet && exerciseIndex == activeExercise ?
+                    <div key={setIndex} className={`containerSet ml-4 ${setIndex == activeSet && exerciseIndex == activeExercise ?
                       "border-solid border-2 rounded-sm border-primary" : ""}`}>
-                      <div className="wrapperSet flex space-x-4">
-                        <div>{set.set_number}</div>
+                      <div className="wrapperSet flex justify-between space-x-4 mx-2">
+                        <div className="flex items-center justify-between space-x-2 text-sm">
+                          <div className="mr-2">{set.set_number}</div>
+                          <div>Reps: {set.reps}</div>
+                          <div>Time: {set.duration}&apos;</div>
+                          <div>Weight: {set.weight}</div>
+                        </div>
                         <button
                           type="button"
                           onClick={() => deleteSet(exerciseIndex, setIndex)}
+                          className="mr-auto text-red-400 font-bold"
                         >
-                          Delete set
+                          X
                         </button>
                       </div>
                     </div>
-                  ))}
-                  <button type="button" onClick={() => addSet(exerciseIndex)}>
-                    Add sets
-                  </button>
-
+                  ))} 
                   <button
                     type="button"
                     onClick={() => deleteExercise(exerciseIndex)}
+                    className="ml-auto mt-2"
                   >
                     Delete exercise
                   </button>
                 </div>
               </div>
             ))}
-            <div className="flex justify-center m-0">
+            <div className="flex justify-center">
               <button type="submit" className="rounded-md border-slate-300 
-            px-3 py-2 text-black bg-slate-100">Finish Workout</button>
+            px-3 py-2 text-black bg-slate-100 mt-4">Finish Workout</button>
             </div>
           </form>
         </div>
 
         {/* Central console */}
-        <div className="flex-2 flex-col w-[50%] mt-10">
+        <div className="flex-2 flex-col w-[50%] mt-10 mb-10 mx-4 bg-primary-foreground p-2 min-h-[78vh]">
           <div className="flex flex-col items-center">
             <div className="border-4 border-solid rounded-md border-primary">
               <input type="text" value={exercises[activeExercise].exerciseName}
@@ -410,7 +413,7 @@ export default function CreateMov() {
 
         </div>
         {/* Charts */}
-        <div className="flex-1 flex-col mt-10"></div>
+        <div className="flex-1 items-center mt-10 mb-10 min-h-[78vh] overflow-y-auto bg-primary-foreground p-2"></div>
       </div>
     </div>
   );
