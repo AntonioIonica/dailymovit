@@ -256,10 +256,10 @@ export default function CreateMov() {
   };
 
   return (
-    <div className="container flex flex-col max-h-screen">
-      <div className="flex max-h-max">
+    <div className="flex w-screen max-h-screen px-10">
+      <div className="flex w-full px-0 mx-0">
         {/* Side form */}
-        <div className="flex-1 items-center mt-10 mb-10 min-h-[78vh] overflow-y-auto bg-primary-foreground p-2">
+        <div className="flex-none w-64 items-center mt-10 mb-10 min-h-[78vh] max-h-[78vh] overflow-y-auto bg-primary-foreground p-2">
           <form onSubmit={handleFinishWorkout} className="space-y-1 w-full">
             <label htmlFor="workoutName">Workout name: </label>
             <input
@@ -332,7 +332,7 @@ export default function CreateMov() {
         </div>
 
         {/* Central console */}
-        <div className="flex-2 flex-col w-[50%] mt-10 mb-10 mx-4 bg-primary-foreground p-2 min-h-[78vh]">
+        <div className="flex-auto w-72 flex-col mt-10 mb-10 mx-4 bg-primary-foreground p-2 min-h-[78vh]">
           <div className="flex flex-col items-center">
             <div className="border-4 border-solid rounded-md border-primary">
               <input type="text" value={exercises[activeExercise].exerciseName}
@@ -413,7 +413,7 @@ export default function CreateMov() {
 
         </div>
         {/* Charts */}
-        <div className="flex-1 items-center mt-10 mb-10 min-h-[78vh] overflow-y-auto bg-primary-foreground p-2"></div>
+        <div className="flex-auto w-32 items-center mt-10 mb-10 min-h-[78vh] overflow-y-auto bg-primary-foreground p-2"></div>
       </div>
     </div>
   );

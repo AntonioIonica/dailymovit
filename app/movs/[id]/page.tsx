@@ -9,12 +9,14 @@ export default async function GetUserMovs({ params }: { params: Promise<{ id: st
   const id = (await params).id;
   const paramsUserId = id;
 
-  const { data: workouts, error: workoutsError } = await supabase.from("workouts").select("name").eq("user_id", userId);
+  const { data: workouts, error: workoutsError } = await supabase.from("workouts").
+    select("id, duration, completed_at, name, public, exercises (id, name, notes, sets (id, set_number, reps, duration, weight, rest_time, rpe))")
+    .eq("user_id", userId);
 
-
-  return (<div>{!workoutsError ? (< Suspense fallback={null}>
-    <MovsClient userId={userId} paramsUserId={paramsUserId} workouts={workouts} />
-  </Suspense>) : (<div>There are no workouts</div>)}
-
+  return (<div>{!workoutsError ?
+    (< Suspense fallback={null}>
+      <MovsClient userId={userId} paramsUserId={paramsUserId} workouts={workouts ?? []} />
+    </Suspense>)
+    : (<div>There are no workouts</div>)}
   </div >)
 }

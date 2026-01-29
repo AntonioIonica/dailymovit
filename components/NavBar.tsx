@@ -23,7 +23,7 @@ export default function Navbar({ children }: { children: ReactNode }) {
       </nav>
 
       {/* Main content */}
-      <div className="flex-1 w-full flex flex-col gap-20 items-center pt-16">
+      <div className="container flex flex-col mt-16 items-center justify-center">
         {children}
       </div>
     </main>
