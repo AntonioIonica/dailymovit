@@ -3,7 +3,7 @@ import { ThemeSwitcher } from "@/components/theme-switcher";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1">
+    <div className="flex flex-col items-center justify-between h-[90vh]">
       {/* Hero section */}
       <div className="flex-1 flex flex-col max-w-screen p-5 items-center">
         <Hero />
