@@ -4,8 +4,12 @@ import { Suspense } from "react";
 
 export default async function GetUserMovs({ params }: { params: Promise<{ id: string }> }) {
   const supabase = await createClient();
+
+  // Get the authenticated user
   const { data } = await supabase.auth.getClaims();
   const userId = data?.claims.sub;
+
+  // Get the params url
   const id = (await params).id;
   const paramsUserId = id;
 
