@@ -12,7 +12,7 @@ import { DateValue } from "../[id]/page";
 import CalendarContainer from "@/components/CalendarContainer";
 import moment from "moment-timezone";
 
-export default function CreateMov() {
+const CreateMov = () => {
   const [workout, setWorkout] = useState({
     name: "New Workout",
     duration: 0,
@@ -48,7 +48,6 @@ export default function CreateMov() {
   const [dayWorkouts, setDayWorkouts] = useState<Workouts | null>(null);
   const [openWorkout, setOpenWorkout] = useState<null | number>(null);
   const [openExercise, setOpenExercise] = useState<null | number>(null);
-  const [hasWorkoutsFetched, setHasWorkoutsFetched] = useState(false);
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -115,8 +114,6 @@ export default function CreateMov() {
 
         const data = await res.json();
         setDayWorkouts(data.workouts ?? null);
-        // mark the selected date workouts fetched to not display -Please select a day- message
-        setHasWorkoutsFetched(true);
       } catch (error) {
         console.error(error);
       } finally {
@@ -613,13 +610,7 @@ export default function CreateMov() {
           <div className="w-full max-h-[67%] h-[67%]">
             <div className="w-[100%] h-full max-h-full overflow-y-auto">
               <div className="container flex flex-col items-start w-full space-y-0">
-                {!hasWorkoutsFetched ? (
-                  <div className="flex justify-center items-center">
-                    Please select a day
-                  </div>
-                ) : dayWorkouts === null ? (
-                  <div>No workouts found</div>
-                ) : !workoutsLoading ? (
+                {!workoutsLoading ? (
                   dayWorkouts?.map((workout, index) => (
                     <div
                       className="w-full border-2 border-solid 
@@ -714,4 +705,5 @@ export default function CreateMov() {
       </div>
     </div>
   );
-}
+};
+export default CreateMov;

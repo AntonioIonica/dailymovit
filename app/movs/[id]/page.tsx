@@ -67,11 +67,11 @@ export function toggleExercises(
   }
 }
 
-export default function MovsClient() {
+const MovsList = () => {
   const [openWorkout, setOpenWorkout] = useState<null | number>(null);
   const [openExercise, setOpenExercise] = useState<null | number>(null);
   const [dateValue, setDateValue] = useState<DateValue>(new Date());
-  const [dayWorkouts, setDayWorkouts] = useState<Workouts | []>([]);
+  const [dayWorkouts, setDayWorkouts] = useState<Workouts | null>(null);
   const [allWorkouts, setAllWorkouts] = useState<Workouts | []>([]);
   const [workoutsLoading, setWorkoutsLoading] = useState(false);
   const [userId, setUserId] = useState<string | null>();
@@ -123,12 +123,12 @@ export default function MovsClient() {
         const res = await fetch(`/api/workouts?date=${dateString}`);
 
         if (!res.ok) {
-          setDayWorkouts([]);
+          setDayWorkouts(null);
           return;
         }
 
         const data = await res.json();
-        setDayWorkouts(data.workouts ?? []);
+        setDayWorkouts(data.workouts ?? null);
       } catch (error) {
         console.error(error);
       } finally {
@@ -294,4 +294,6 @@ export default function MovsClient() {
       </div>
     </div>
   );
-}
+};
+
+export default MovsList;
