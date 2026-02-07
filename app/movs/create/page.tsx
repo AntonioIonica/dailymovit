@@ -595,7 +595,10 @@ export default function CreateMov() {
         </div>
 
         {/* Calendar and details container */}
-        <div className="flex-auto flex-col w-[7rem] items-center mt-10 mb-10 min-h-[78vh] bg-primary-foreground p-2 space-y-2">
+        <div
+          className="flex-auto flex-col w-[7rem] items-center mt-10 mb-10 
+        min-h-[78vh] bg-primary-foreground p-2 space-y-2"
+        >
           {/* Calendar  */}
           <div className="w-full h-[32%]">
             <CalendarContainer

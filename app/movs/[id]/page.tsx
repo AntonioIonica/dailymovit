@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import moment from "moment-timezone";
@@ -152,9 +153,41 @@ export default function MovsClient() {
         </div>
 
         {/* General info */}
-        <div className="flex flex-col w-[40%] border-2 border-solid border-cyan-100">
+        <div className="flex flex-col w-[40%] border-2 border-solid border-cyan-100 p-3 space-y-3">
+          <div>Number of workouts: {allWorkouts?.length ?? 0}</div>
           <div>
-            Number of workouts: {allWorkouts?.length ?? "No workouts yet"}
+            Total reps:{" "}
+            {allWorkouts
+              ?.flatMap((workout) => workout.exercises)
+              .flatMap((exercise) => exercise.sets)
+              .reduce((sum, set) => sum + set.reps, 0) ?? 0}
+          </div>
+          <div>
+            Longest workout:{" "}
+            {Math.max(
+              ...(allWorkouts?.map((workout) => workout.duration) as any[]),
+            ) ?? 0}
+          </div>
+          <div>
+            Highest reps count:{" "}
+            {Math.max(
+              ...(allWorkouts
+                ?.flatMap((workout) => workout.exercises)
+                .flatMap((exercise) =>
+                  exercise.sets.map((set) => set.reps),
+                ) as any[]),
+            ) ?? 0}
+          </div>
+          <div>
+            Heaviest weight:{" "}
+            {Math.max(
+              ...(allWorkouts
+                ?.flatMap((workout) => workout.exercises)
+                .flatMap((exercise) =>
+                  exercise.sets.map((set) => set.weight),
+                ) as any[]),
+            ) ?? 0}{" "}
+            kg
           </div>
         </div>
       </div>
@@ -178,8 +211,7 @@ export default function MovsClient() {
               {!workoutsLoading ? (
                 dayWorkouts?.map((workout, index) => (
                   <div
-                    className="w-full border-2 border-solid 
-                    rounded-sm border-primary px-4 flex flex-col"
+                    className="w-full rounded-sm px-4 flex flex-col"
                     key={index}
                   >
                     <button
