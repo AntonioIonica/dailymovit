@@ -45,9 +45,10 @@ export default function CreateMov() {
   const [allWorkouts, setAllWorkouts] = useState<Workouts | []>([]);
   const [dateValue, setDateValue] = useState<DateValue>(new Date());
   const [workoutsLoading, setWorkoutsLoading] = useState(false);
-  const [dayWorkouts, setDayWorkouts] = useState<Workouts | []>([]);
+  const [dayWorkouts, setDayWorkouts] = useState<Workouts | null>(null);
   const [openWorkout, setOpenWorkout] = useState<null | number>(null);
   const [openExercise, setOpenExercise] = useState<null | number>(null);
+  const [hasWorkoutsFetched, setHasWorkoutsFetched] = useState(false);
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -108,12 +109,14 @@ export default function CreateMov() {
         const res = await fetch(`/api/workouts?date=${dateString}`);
 
         if (!res.ok) {
-          setDayWorkouts([]);
+          setDayWorkouts(null);
           return;
         }
 
         const data = await res.json();
-        setDayWorkouts(data.workouts ?? []);
+        setDayWorkouts(data.workouts ?? null);
+        // mark the selected date workouts fetched to not display -Please select a day- message
+        setHasWorkoutsFetched(true);
       } catch (error) {
         console.error(error);
       } finally {
@@ -591,7 +594,7 @@ export default function CreateMov() {
           </div>
         </div>
 
-        {/* Calendar and details */}
+        {/* Calendar and details container */}
         <div className="flex-auto flex-col w-[7rem] items-center mt-10 mb-10 min-h-[78vh] bg-primary-foreground p-2 space-y-2">
           {/* Calendar  */}
           <div className="w-full h-[32%]">
@@ -599,6 +602,7 @@ export default function CreateMov() {
               dateValue={dateValue}
               setDateValue={setDateValue}
               allWorkouts={allWorkouts}
+              calSize="smallCal"
             />
           </div>
 
@@ -606,7 +610,13 @@ export default function CreateMov() {
           <div className="w-full max-h-[67%] h-[67%]">
             <div className="w-[100%] h-full max-h-full overflow-y-auto">
               <div className="container flex flex-col items-start w-full space-y-0">
-                {!workoutsLoading ? (
+                {!hasWorkoutsFetched ? (
+                  <div className="flex justify-center items-center">
+                    Please select a day
+                  </div>
+                ) : dayWorkouts === null ? (
+                  <div>No workouts found</div>
+                ) : !workoutsLoading ? (
                   dayWorkouts?.map((workout, index) => (
                     <div
                       className="w-full border-2 border-solid 
