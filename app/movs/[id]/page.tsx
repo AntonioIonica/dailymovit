@@ -2,10 +2,13 @@
 "use client";
 
 import moment from "moment-timezone";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useParams } from "next/navigation";
 import CalendarContainer from "@/components/CalendarContainer";
+import { CartesianGrid, Legend, Line, LineChart, XAxis, YAxis } from "recharts";
+import { RechartsDevtools } from "@recharts/devtools";
+import _ from "lodash";
 
 type Workout = {
   id: string;
@@ -75,7 +78,50 @@ const MovsList = () => {
   const [allWorkouts, setAllWorkouts] = useState<Workouts | []>([]);
   const [workoutsLoading, setWorkoutsLoading] = useState(false);
   const [userId, setUserId] = useState<string | null>();
+  const [exerciseChart, setExerciseChart] = useState<any>(null);
   const params = useParams<{ id: string }>();
+
+  const dateWorkoutChart = useCallback(
+    (workouts: Workouts) => {
+      const exerciseChartField: any[] = [];
+
+      const allExercises = allWorkouts
+        ?.flatMap((workout) => workout.exercises)
+        .flatMap((exercise) => exercise.name);
+
+      workouts?.forEach((workout) =>
+        workout.exercises.map((exercise) => {
+          const includesExercise = allExercises?.includes(exercise.name);
+
+          if (includesExercise) {
+            exerciseChartField.push({
+              reps:
+                _.mean(
+                  workout.exercises.map((exercise) =>
+                    exercise.sets.map((set) => set.reps),
+                  ),
+                ) || 0,
+              date: workout.completed_at.toString().split("T")[0],
+              name: exercise.name,
+            });
+            console.log(
+              `First exerciseField: ${JSON.stringify(exerciseChartField, null, 2)}`,
+            );
+            exerciseChartField.push({
+              reps: _.mean(exercise.sets.map((set) => set.reps)) || 0,
+              date: workout.completed_at.toString().split("T")[0],
+              name: exercise.name,
+            });
+            console.log(
+              `Second exerciseField: ${JSON.stringify(exerciseChartField, null, 2)}`,
+            );
+          }
+        }),
+      );
+      setExerciseChart(exerciseChartField);
+    },
+    [allWorkouts],
+  );
 
   // get the current logged user
   useEffect(() => {
@@ -129,6 +175,7 @@ const MovsList = () => {
 
         const data = await res.json();
         setDayWorkouts(data.workouts ?? null);
+        dateWorkoutChart(data.workouts);
       } catch (error) {
         console.error(error);
       } finally {
@@ -137,7 +184,15 @@ const MovsList = () => {
     };
 
     fetchWorkouts();
-  }, [dateValue]);
+  }, [dateValue, dateWorkoutChart]);
+
+  const dataChart = [
+    {
+      reps: 4,
+      date: "24-4-2026",
+      name: "Pullups",
+    },
+  ];
 
   if (userId !== params.id) {
     return <div>You are not logged in!</div>;
@@ -145,11 +200,29 @@ const MovsList = () => {
 
   return (
     <div className="flex flex-col max-h-screen min-h-[78vh] w-screen px-10">
-      {/* Streaks and general info */}
+      {/* Charts and general info */}
       <div className="streaks flex w-full h-[30vh] border-2 border-solid border-cyan-100">
-        {/* Streaks */}
+        {/* Charts */}
         <div className="flex w-[60%] border-2 border-solid border-cyan-100">
-          <div>Streaks</div>
+          <div className="flex items-center justify-center w-[100%] max-h-[100%]">
+            <LineChart
+              style={{
+                width: "90%",
+                aspectRatio: 1.15,
+                maxWidth: "90%",
+                height: "90%",
+              }}
+              responsive
+              data={exerciseChart || dataChart}
+            >
+              <CartesianGrid />
+              <Line dataKey="reps" />
+              <XAxis dataKey="date" />
+              <YAxis dataKey="reps" />
+              <Legend name="name" />
+              <RechartsDevtools />
+            </LineChart>
+          </div>
         </div>
 
         {/* General info */}
@@ -223,7 +296,7 @@ const MovsList = () => {
                       {workout?.name}
                     </button>
 
-                    {/* Details of eah workout */}
+                    {/* Details of each workout */}
                     {openWorkout === index && (
                       <div className="panel overflow-hidden flex-col w-full">
                         {/* Workout details */}
