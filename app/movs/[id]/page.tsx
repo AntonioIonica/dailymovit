@@ -6,7 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useParams } from "next/navigation";
 import CalendarContainer from "@/components/CalendarContainer";
-import { CartesianGrid, Legend, Line, LineChart, XAxis, YAxis } from "recharts";
+import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 import { RechartsDevtools } from "@recharts/devtools";
 import _ from "lodash";
 
@@ -85,42 +85,28 @@ const MovsList = () => {
     (workouts: Workouts) => {
       const exerciseChartField: any[] = [];
 
-      const allExercises = allWorkouts
-        ?.flatMap((workout) => workout.exercises)
-        .flatMap((exercise) => exercise.name);
+      // Get the exercise name by the open dialogs
+      const exerciseName =
+        workouts?.[openWorkout! || 0]?.exercises?.[openExercise! || 0]?.name;
 
-      workouts?.forEach((workout) =>
-        workout.exercises.map((exercise) => {
-          const includesExercise = allExercises?.includes(exercise.name);
+      allWorkouts?.forEach((workout) =>
+        workout.exercises.forEach((exercise) => {
+          // For the exercises (from all) where it's included the active one
+          if (exercise.name.includes(exerciseName!)) {
+            const repsArray = exercise.sets.map((set) => set.reps);
 
-          if (includesExercise) {
             exerciseChartField.push({
-              reps:
-                _.mean(
-                  workout.exercises.map((exercise) =>
-                    exercise.sets.map((set) => set.reps),
-                  ),
-                ) || 0,
+              reps: _.mean(repsArray || 0),
               date: workout.completed_at.toString().split("T")[0],
               name: exercise.name,
             });
-            console.log(
-              `First exerciseField: ${JSON.stringify(exerciseChartField, null, 2)}`,
-            );
-            exerciseChartField.push({
-              reps: _.mean(exercise.sets.map((set) => set.reps)) || 0,
-              date: workout.completed_at.toString().split("T")[0],
-              name: exercise.name,
-            });
-            console.log(
-              `Second exerciseField: ${JSON.stringify(exerciseChartField, null, 2)}`,
-            );
           }
         }),
       );
-      setExerciseChart(exerciseChartField);
+      const sortedDataForChart = _.sortBy(exerciseChartField, "date");
+      setExerciseChart(sortedDataForChart.slice(-7, sortedDataForChart.length));
     },
-    [allWorkouts],
+    [openExercise, openWorkout, allWorkouts],
   );
 
   // get the current logged user
@@ -207,10 +193,10 @@ const MovsList = () => {
           <div className="flex items-center justify-center w-[100%] max-h-[100%]">
             <LineChart
               style={{
-                width: "90%",
+                width: "100%",
                 aspectRatio: 1.15,
-                maxWidth: "90%",
-                height: "90%",
+                maxWidth: "100%",
+                height: "100%",
               }}
               responsive
               data={exerciseChart || dataChart}
@@ -219,7 +205,6 @@ const MovsList = () => {
               <Line dataKey="reps" />
               <XAxis dataKey="date" />
               <YAxis dataKey="reps" />
-              <Legend name="name" />
               <RechartsDevtools />
             </LineChart>
           </div>
