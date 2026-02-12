@@ -6,7 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useParams } from "next/navigation";
 import CalendarContainer from "@/components/CalendarContainer";
-import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
+import { CartesianGrid, Legend, Line, LineChart, XAxis, YAxis } from "recharts";
 import { RechartsDevtools } from "@recharts/devtools";
 import _ from "lodash";
 
@@ -81,8 +81,12 @@ const MovsList = () => {
   const [exerciseChart, setExerciseChart] = useState<any>(null);
   const params = useParams<{ id: string }>();
 
+  // Setting data for the chart
   const dateWorkoutChart = useCallback(
     (workouts: Workouts) => {
+      if (!workouts) {
+        return null;
+      }
       const exerciseChartField: any[] = [];
 
       // Get the exercise name by the open dialogs
@@ -103,7 +107,9 @@ const MovsList = () => {
           }
         }),
       );
+      // Sorting by date using Lodash asc
       const sortedDataForChart = _.sortBy(exerciseChartField, "date");
+      // Get only the last 7 days
       setExerciseChart(sortedDataForChart.slice(-7, sortedDataForChart.length));
     },
     [openExercise, openWorkout, allWorkouts],
@@ -172,17 +178,29 @@ const MovsList = () => {
     fetchWorkouts();
   }, [dateValue, dateWorkoutChart]);
 
-  const dataChart = [
-    {
-      reps: 4,
-      date: "24-4-2026",
-      name: "Pullups",
-    },
-  ];
-
   if (userId !== params.id) {
     return <div>You are not logged in!</div>;
   }
+
+  // Customize the charts last date
+  const CustomTick = (props: any) => {
+    const { x, y, payload, index, visibleTicksCount } = props;
+
+    const isLast = index === visibleTicksCount - 1;
+
+    return (
+      <text
+        x={x}
+        y={y}
+        dy={16}
+        textAnchor="middle"
+        fill={isLast ? "#a1cb9f" : "#ffffff"}
+        fontWeight={isLast ? "bold" : "normal"}
+      >
+        {payload.value}
+      </text>
+    );
+  };
 
   return (
     <div className="flex flex-col max-h-screen min-h-[78vh] w-screen px-10">
@@ -190,21 +208,26 @@ const MovsList = () => {
       <div className="streaks flex w-full h-[30vh] border-2 border-solid border-cyan-100">
         {/* Charts */}
         <div className="flex w-[60%] border-2 border-solid border-cyan-100">
-          <div className="flex items-center justify-center w-[100%] max-h-[100%]">
+          <div className="flex items-center justify-center w-[100%] max-h-[100%] p-3">
             <LineChart
               style={{
                 width: "100%",
-                aspectRatio: 1.15,
+                aspectRatio: "auto",
                 maxWidth: "100%",
                 height: "100%",
               }}
               responsive
-              data={exerciseChart || dataChart}
+              data={exerciseChart || []}
             >
               <CartesianGrid />
-              <Line dataKey="reps" />
-              <XAxis dataKey="date" />
+              <Line
+                dataKey="reps"
+                name="Average exercise reps"
+                type="monotone"
+              />
+              <XAxis dataKey="date" tick={<CustomTick />} />
               <YAxis dataKey="reps" />
+              <Legend />
               <RechartsDevtools />
             </LineChart>
           </div>
