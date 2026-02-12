@@ -372,51 +372,57 @@ const CreateMov = () => {
     <div className="flex w-screen max-h-screen px-10">
       <div className="flex w-full px-0 mx-0">
         {/* Side form */}
-        <div className="flex-none w-[22rem] items-center mt-10 mb-10 min-h-[78vh] max-h-[78vh] overflow-y-auto bg-primary-foreground p-2">
+        <div
+          className="flex-none w-[22rem] items-center mt-10
+         mb-10 min-h-[78vh] max-h-[78vh] overflow-y-auto bg-primary-foreground p-2"
+        >
           <form onSubmit={handleFinishWorkout} className="space-y-1 w-full">
-            <label htmlFor="workoutName">Workout name: </label>
+            <label htmlFor="workoutName">
+              Workout name: <span className="text-sm">*editable</span>
+            </label>
             <input
               id="workoutName"
               name="workoutName"
               type="text"
               value={workout.name}
               maxLength={25}
-              placeholder="New workout"
+              placeholder="New workout..."
               onChange={(e) => handleWorkoutName(e)}
-              className="w-full"
+              className="w-full pl-6 focus:outline-none focus:ring-2 focus:ring-primary
+               focus:border-transparent focus:rounded-sm rounded-sm focus:scale-[101%]"
             />
-            <div className="flex">
-              <label htmlFor="publicCheckbox">Public workout</label>
+            <div className="flex items-center">
+              <label htmlFor="publicCheckbox">Public workout: </label>
               <input
                 id="publicCheckbox"
                 name="publicCheckbox"
                 type="checkBox"
-                className="m-auto"
+                className="ml-4 w-5 h-5"
                 defaultChecked={true}
               />
             </div>
 
             {exercises.map((exercise, exerciseIndex) => (
               <div
-                className={`containerExercise p-2 ${
+                className={`p-2 ${
                   exerciseIndex == activeExercise
                     ? "border-solid border-2 rounded-sm border-primary"
                     : ""
                 }`}
                 key={exerciseIndex}
               >
-                <div className="wrapperExercise w-full flex flex-col">
+                <div className="w-full flex flex-col">
                   <input
                     value={exercise.exerciseName}
                     type="text"
                     placeholder="Exercise name"
                     onChange={(e) => handleExerciseName(exerciseIndex, e)}
-                    className="w-full mb-1"
+                    className="w-full mb-2 pl-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent focus:rounded-sm rounded-sm focus:scale-[101%]"
                   />
                   {exercise.sets.map((set, setIndex) => (
                     <div
                       key={setIndex}
-                      className={`containerSet ml-4 ${
+                      className={`containerSet ml-3 ${
                         setIndex == activeSet && exerciseIndex == activeExercise
                           ? "border-solid border-2 rounded-sm border-primary"
                           : ""
@@ -424,7 +430,7 @@ const CreateMov = () => {
                     >
                       <div className="wrapperSet flex justify-between space-x-4 mx-2">
                         <div className="flex items-center justify-between space-x-2 text-sm">
-                          <div className="mr-2">{set.set_number}</div>
+                          <div className="mr-2">{set.set_number}.</div>
                           <div>Reps: {set.reps}</div>
                           <div>Time: {set.duration}&apos;</div>
                           <div>Weight: {set.weight}</div>
@@ -432,7 +438,7 @@ const CreateMov = () => {
                         <button
                           type="button"
                           onClick={() => deleteSet(exerciseIndex, setIndex)}
-                          className="mr-auto text-red-400 font-bold"
+                          className="mr-auto text-red-400 font-bold hover:outline-none hover:scale-125"
                         >
                           X
                         </button>
@@ -442,7 +448,7 @@ const CreateMov = () => {
                   <button
                     type="button"
                     onClick={() => deleteExercise(exerciseIndex)}
-                    className="ml-auto mt-2"
+                    className="ml-auto mt-2 font-bold py-1 px-2 bg-primary rounded-sm hover:scale-105 hover:bg-[#b2d16f]"
                   >
                     Delete exercise
                   </button>
@@ -452,10 +458,10 @@ const CreateMov = () => {
             <div className="flex justify-center">
               <button
                 type="submit"
-                className="rounded-md border-slate-300 
-            px-3 py-2 text-black bg-slate-100 mt-4"
+                className="rounded-md font-semibold 
+            px-3 py-2 text-black bg-primary mt-4 hover:scale-105 hover:bg-[#aad06cec] uppercase"
               >
-                Finish Workout
+                Send the mov
               </button>
             </div>
           </form>
@@ -464,33 +470,46 @@ const CreateMov = () => {
         {/* Central console */}
         <div className="flex-auto w-[16rem] flex-col mt-10 mb-10 mx-4 bg-primary-foreground p-2 min-h-[78vh]">
           <div className="flex flex-col items-center">
-            <div className="border-4 border-solid rounded-md border-primary">
-              <input
-                type="text"
-                value={exercises[activeExercise].exerciseName}
-                onChange={(e) => handleExerciseName(activeExercise, e)}
-                className="text-center py-2 text-lg"
-              />
-            </div>
+            {/* Exercise name */}
+            <input
+              type="text"
+              maxLength={25}
+              placeholder="New workout..."
+              value={exercises[activeExercise].exerciseName}
+              onChange={(e) => handleExerciseName(activeExercise, e)}
+              className="text-center py-2 text-lg mt-2 focus:outline-none focus:ring-2
+                 focus:ring-primary focus:border-transparent rounded-sm focus:scale-[101%]"
+            />
 
-            <div className="flex items-center justify-between w-[35%]">
-              <div className="flex flex-col">
-                <span>Work: {workDuration}</span>
-                <button disabled={isRunning} onClick={handleStartTimer}>
+            {/* Exercise duration */}
+            <div className="flex items-center justify-between max-w-[100%] mt-4 space-x-16">
+              <div className="flex flex-col max-w-full space-y-2">
+                <span>Work time: {workDuration} s</span>
+                <button
+                  className="btn px-1 py-0.5"
+                  disabled={isRunning}
+                  onClick={handleStartTimer}
+                >
                   Start
                 </button>
               </div>
 
-              <div className="flex flex-col">
-                <span>Rest time: {restDuration}</span>
-                <button disabled={isBreak} onClick={handleStopTimer}>
-                  Take a break
+              <div className="flex flex-col max-w-full space-y-2">
+                <span>Rest time: {restDuration} s</span>
+                <button
+                  className="btn px-1 py-0.5"
+                  disabled={isBreak}
+                  onClick={handleStopTimer}
+                >
+                  Pause
                 </button>
               </div>
             </div>
-            <div className="flex justify-center items-center">
+
+            {/* Central reps */}
+            <div className="flex justify-center items-center my-3">
               <button
-                className="flex items-center justify-center text-4xl"
+                className="py-4 px-4 flex items-center justify-center text-5xl"
                 onClick={decrementRep}
               >
                 -
@@ -499,43 +518,55 @@ const CreateMov = () => {
                 {exercises[activeExercise].sets[activeSet].reps}
               </div>
               <button
-                className="flex items-center justify-center text-4xl"
+                className="py-4 px-4 flex items-center justify-center text-5xl"
                 onClick={incrementRep}
               >
                 +
               </button>
             </div>
+            {/* Reps range */}
             <input
               type="range"
               value={exercises[activeExercise].sets[activeSet].reps}
               onChange={(e) => handleSetRep(activeExercise, activeSet, e)}
               min={1}
               max={30}
-              className="scale-[250%]"
+              className="scale-[230%]"
             />
-            <div className="flex space-x-8 items-center mt-14">
-              <div className="flex flex-col space-y-2 items-center">
-                <input
-                  type="range"
-                  className="w-16"
-                  value={exercises[activeExercise].sets[activeSet].rpe}
-                  min={1}
-                  max={10}
-                  onChange={(e) => handleSetRpe(activeExercise, activeSet, e)}
-                />
-                {exercises[activeExercise].sets[activeSet].rpe}
+
+            {/* Set details */}
+            <div className="flex space-x-8 items-center justify-center mt-12 w-full">
+              <div className="flex flex-col space-y-0 items-center">
+                <label htmlFor="rpe">
+                  RPE: {exercises[activeExercise].sets[activeSet].rpe}
+                </label>
+                <div>
+                  <input
+                    type="range"
+                    name="rpe"
+                    id="rpe"
+                    className="w-16"
+                    value={exercises[activeExercise].sets[activeSet].rpe}
+                    min={1}
+                    max={10}
+                    onChange={(e) => handleSetRpe(activeExercise, activeSet, e)}
+                  />
+                </div>
               </div>
+
               <button
                 onClick={() => addSet(activeExercise)}
                 type="button"
-                className="rounded-md border-slate-300 
-            px-3 py-2 text-black bg-slate-100"
+                className="btn px-3 py-3 text-black"
               >
                 Finish set
               </button>
-              <span className="flex flex-col">
+
+              {/* Weight container */}
+              <span className="flex flex-col space-y-1">
                 <input
-                  className="max-w-16 flex items-center"
+                  className="max-w-16 flex items-center pl-2 rounded-sm
+                   focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent focus:scale-[101%]"
                   type="number"
                   value={exercises[activeExercise]?.sets[activeSet]?.weight}
                   placeholder="KG/LB"
@@ -545,14 +576,21 @@ const CreateMov = () => {
                   min={0}
                   max={1000}
                 />
-                Kgs/Lbs
+                <span>Kgs/Lbs</span>
               </span>
             </div>
 
-            <div className="flex mt-4 space-x-4">
-              <button type="button" onClick={toggleDialog}>
-                Add note
-              </button>
+            <div className="flex flex-col mt-4 space-y-4">
+              <div className="text-center">
+                <button
+                  type="button"
+                  onClick={toggleDialog}
+                  className="btn !px-2 !py-1"
+                >
+                  Add note
+                </button>
+              </div>
+
               {/* Dialog for exercise notes */}
               <div className="absolute top-0 left-[50%]">
                 <dialog
@@ -582,10 +620,9 @@ const CreateMov = () => {
               <button
                 onClick={addExercise}
                 type="button"
-                className="rounded-md border-slate-300 
-            px-3 py-2 text-black bg-slate-100"
+                className="btn !px-4 !py-3 mt-2"
               >
-                Finish exercise
+                Next exercise
               </button>
             </div>
           </div>

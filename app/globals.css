@@ -30,6 +30,7 @@
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
   }
+
   .dark {
     --background: 102 45 6;
     --foreground: 0 0% 98%;
@@ -62,6 +63,7 @@
   * {
     @apply border-border box-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }
@@ -79,4 +81,17 @@ dialog::backdrop {
   background-color: rgba(144, 122, 122, 0.3);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
+}
+
+.btn {
+  border-radius: 5px;
+  font: bold;
+  border-color: hsl(var(--border));
+  color: white;
+  background-color: hsl(var(--primary));
+}
+
+.btn:hover {
+  background: #aad06cec;
+  scale: 105%;
 }
