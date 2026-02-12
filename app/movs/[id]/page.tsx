@@ -203,12 +203,12 @@ const MovsList = () => {
   };
 
   return (
-    <div className="flex flex-col max-h-screen min-h-[78vh] w-screen px-10">
+    <div className="flex flex-col max-h-screen min-h-[78vh] w-screen px-10 space-y-3">
       {/* Charts and general info */}
-      <div className="streaks flex w-full h-[30vh] border-2 border-solid border-cyan-100">
+      <div className="streaks flex w-full h-[30vh] space-x-3">
         {/* Charts */}
-        <div className="flex w-[60%] border-2 border-solid border-cyan-100">
-          <div className="flex items-center justify-center w-[100%] max-h-[100%] p-3">
+        <div className="flex w-[60%] bg-primary-foreground">
+          <div className="flex items-center justify-center w-[100%] max-h-[100%] p-2">
             <LineChart
               style={{
                 width: "100%",
@@ -234,7 +234,7 @@ const MovsList = () => {
         </div>
 
         {/* General info */}
-        <div className="flex flex-col w-[40%] border-2 border-solid border-cyan-100 p-3 space-y-3">
+        <div className="flex flex-col w-[40%] px-6 py-3 space-y-3 bg-primary-foreground">
           <div>Number of workouts: {allWorkouts?.length ?? 0}</div>
           <div>
             Total reps:{" "}
@@ -274,9 +274,9 @@ const MovsList = () => {
       </div>
 
       {/* Container for workouts and calendar */}
-      <div className="flex w-full h-[54vh]">
+      <div className="flex w-full h-[54vh] space-x-3">
         {/* Calendar */}
-        <div className="w-[40%] border-2 border-solid border-cyan-100">
+        <div className="w-[40%] bg-primary-foreground">
           <CalendarContainer
             dateValue={dateValue}
             setDateValue={setDateValue}
@@ -286,7 +286,7 @@ const MovsList = () => {
         </div>
 
         {/* Workouts list */}
-        <div className="border-2 border-solid border-cyan-100 w-[60%] h-full text-lg">
+        <div className="w-[60%] h-full text-lg bg-primary-foreground">
           <div className="w-[100%] h-full max-h-[64vh] overflow-y-auto">
             <div className="container flex flex-col items-start w-full space-y-0">
               {!workoutsLoading ? (
@@ -301,7 +301,7 @@ const MovsList = () => {
                       }
                       className="accordion w-full text-start font-bold text-md"
                     >
-                      {workout?.name}
+                      - {workout?.name}
                     </button>
 
                     {/* Details of each workout */}
@@ -320,7 +320,10 @@ const MovsList = () => {
                         <div className="flex w-full flex-col">
                           <div className="flex flex-col">
                             {workout?.exercises.map((exercises, index) => (
-                              <div key={index} className="flex flex-col w-full">
+                              <div
+                                key={index}
+                                className={`flex flex-col w-full px-2 py-1 ${index === openExercise ? "border-2 border-solid border-[#a1cb9f] rounded-sm" : ""}`}
+                              >
                                 <div className="flex space-x-4 ml-4">
                                   <button
                                     className="underline"
@@ -340,11 +343,11 @@ const MovsList = () => {
                                   )}
                                 </div>
                                 {openExercise === index && (
-                                  <div className="flex flex-col text-sm ml-6">
+                                  <div className="flex flex-col text-sm ml-8">
                                     {exercises.sets.map((set, index) => (
                                       <ul
                                         key={index}
-                                        className="flex items-center justify-between"
+                                        className="flex items-center justify-between w-full px-3"
                                       >
                                         <li>Set: {set.set_number || "-"}</li>
                                         <li>Reps: {set.reps || "-"}</li>

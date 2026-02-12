@@ -163,7 +163,7 @@
   background-color: #e6e6e6;
 }
 
-
+/* Styling for the large calendar */
 .largeCal {
   .react-calendar {
     max-width: 100%;
@@ -299,7 +299,8 @@
   }
 
   .react-calendar__tile--now {
-    background: #ffff76;
+    background: #fefffe;
+    color: black
   }
 
   .react-calendar__tile--now:enabled:hover,
