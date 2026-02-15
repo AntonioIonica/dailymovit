@@ -1,5 +1,4 @@
 import { Hero } from "@/components/hero";
-import { ThemeSwitcher } from "@/components/theme-switcher";
 
 export default function Home() {
   return (
@@ -23,7 +22,7 @@ export default function Home() {
           </a>{" "}
           2026
         </p>
-        <ThemeSwitcher />
+        {/* <ThemeSwitcher /> */}
       </footer>
     </div>
   );
