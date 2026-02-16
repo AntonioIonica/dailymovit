@@ -79,7 +79,7 @@ const MovsList = () => {
   const [workoutsLoading, setWorkoutsLoading] = useState(false);
   const [userId, setUserId] = useState<string | null>();
   const [exerciseChart, setExerciseChart] = useState<any>(null);
-  
+
   const params = useParams<{ id: string }>();
 
   // Setting data for the chart
@@ -204,12 +204,12 @@ const MovsList = () => {
   };
 
   return (
-    <div className="flex flex-col max-h-screen min-h-[78vh] w-screen px-10 space-y-3">
+    <div className="flex max-h-screen min-h-[78vh] w-screen flex-col space-y-3 px-10">
       {/* Charts and general info */}
-      <div className="streaks flex w-full h-[30vh] space-x-3">
+      <div className="streaks flex h-[30vh] w-full space-x-3">
         {/* Charts */}
         <div className="flex w-[60%] bg-primary-foreground">
-          <div className="flex items-center justify-center w-[100%] max-h-[100%] p-2">
+          <div className="flex max-h-[100%] w-[100%] items-center justify-center p-2">
             <LineChart
               style={{
                 width: "100%",
@@ -235,7 +235,7 @@ const MovsList = () => {
         </div>
 
         {/* General info */}
-        <div className="flex flex-col w-[40%] px-6 py-3 space-y-3 bg-primary-foreground">
+        <div className="flex w-[40%] flex-col space-y-3 bg-primary-foreground px-6 py-3">
           <div>Number of workouts: {allWorkouts?.length ?? 0}</div>
           <div>
             Total reps:{" "}
@@ -247,7 +247,7 @@ const MovsList = () => {
           <div>
             Longest workout:{" "}
             {Math.max(
-              ...(allWorkouts?.map((workout) => workout.duration) as any[]),
+              ...(allWorkouts?.map((workout) => workout.duration) || []),
             ) ?? 0}
           </div>
           <div>
@@ -255,9 +255,8 @@ const MovsList = () => {
             {Math.max(
               ...(allWorkouts
                 ?.flatMap((workout) => workout.exercises)
-                .flatMap((exercise) =>
-                  exercise.sets.map((set) => set.reps),
-                ) as any[]),
+                .flatMap((exercise) => exercise.sets.map((set) => set.reps)) ||
+                []),
             ) ?? 0}
           </div>
           <div>
@@ -267,7 +266,7 @@ const MovsList = () => {
                 ?.flatMap((workout) => workout.exercises)
                 .flatMap((exercise) =>
                   exercise.sets.map((set) => set.weight),
-                ) as any[]),
+                ) || []),
             ) ?? 0}{" "}
             kg
           </div>
@@ -275,7 +274,7 @@ const MovsList = () => {
       </div>
 
       {/* Container for workouts and calendar */}
-      <div className="flex w-full h-[54vh] space-x-3">
+      <div className="flex h-[54vh] w-full space-x-3">
         {/* Calendar */}
         <div className="w-[40%] bg-primary-foreground">
           <CalendarContainer
@@ -287,27 +286,27 @@ const MovsList = () => {
         </div>
 
         {/* Workouts list */}
-        <div className="w-[60%] h-full text-lg bg-primary-foreground">
-          <div className="w-[100%] h-full max-h-[64vh] overflow-y-auto">
-            <div className="container flex flex-col items-start w-full space-y-0">
+        <div className="h-full w-[60%] bg-primary-foreground text-lg">
+          <div className="h-full max-h-[64vh] w-[100%] overflow-y-auto">
+            <div className="container flex w-full flex-col items-start space-y-0">
               {!workoutsLoading ? (
                 dayWorkouts?.map((workout, index) => (
                   <div
-                    className="w-full rounded-sm px-4 flex flex-col"
+                    className="flex w-full flex-col rounded-sm px-4"
                     key={index}
                   >
                     <button
                       onClick={() =>
                         toggleWorkouts(index, setOpenWorkout, openWorkout)
                       }
-                      className="accordion w-full text-start font-bold text-md"
+                      className="accordion text-md w-full text-start font-bold"
                     >
                       - {workout?.name}
                     </button>
 
                     {/* Details of each workout */}
                     {openWorkout === index && (
-                      <div className="panel overflow-hidden flex-col w-full">
+                      <div className="panel w-full flex-col overflow-hidden">
                         {/* Workout details */}
                         <div className="flex w-full space-x-6">
                           <span>Duration: {workout?.duration} sec</span>
@@ -323,9 +322,9 @@ const MovsList = () => {
                             {workout?.exercises.map((exercises, index) => (
                               <div
                                 key={index}
-                                className={`flex flex-col w-full px-2 py-1 ${index === openExercise ? "border-2 border-solid border-[#a1cb9f] rounded-sm" : ""}`}
+                                className={`flex w-full flex-col px-2 py-1 ${index === openExercise ? "rounded-sm border-2 border-solid border-[#a1cb9f]" : ""}`}
                               >
-                                <div className="flex space-x-4 ml-4">
+                                <div className="ml-4 flex space-x-4">
                                   <button
                                     className="underline"
                                     onClick={() =>
@@ -344,11 +343,11 @@ const MovsList = () => {
                                   )}
                                 </div>
                                 {openExercise === index && (
-                                  <div className="flex flex-col text-sm ml-8">
+                                  <div className="ml-8 flex flex-col text-sm">
                                     {exercises.sets.map((set, index) => (
                                       <ul
                                         key={index}
-                                        className="flex items-center justify-between w-full px-3"
+                                        className="flex w-full items-center justify-between px-3"
                                       >
                                         <li>Set: {set.set_number || "-"}</li>
                                         <li>Reps: {set.reps || "-"}</li>

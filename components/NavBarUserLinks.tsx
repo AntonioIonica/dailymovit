@@ -23,7 +23,7 @@ export default async function NavBarUserLinks() {
         Start Workout
       </Link>
       <Link className="navbar-links" href={profileLink}>
-        My Profile
+        Share my profile
       </Link>
       <Link className="navbar-links" href={`/movs/${user?.sub}`}>
         My Movs
