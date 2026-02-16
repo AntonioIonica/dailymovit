@@ -40,6 +40,7 @@ export default function Dashboard() {
         .select("email, display_name, avatar_url, user_name")
         .eq("id", userData.id)
         .single();
+        
       setProfile(
         profile || {
           email: "",

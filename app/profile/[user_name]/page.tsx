@@ -1,29 +1,43 @@
-import { Suspense } from "react";
-import { createClient } from "@/lib/supabase/server";
+"use client";
 
-async function ProfileId({ params }: { params: Promise<{ id: number }> }) {
-  const { id } = await params;
-  const supabase = await createClient();
+import { Workouts } from "@/app/movs/[id]/page";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("id", id)
-    .single();
+type ProfileType = {
+  id: string;
+  display_name: string;
+  email?: string;
+  avatar_url?: string;
+};
 
-  return <>User profile is: {profile.email}</>;
-}
+export default function Profile() {
+  const params = useParams<{ user_name: string }>();
 
-export default async function Profile({
-  params,
-}: {
-  params: Promise<{ id: number }>;
-}) {
+  const [profile, setProfile] = useState<ProfileType | null>(null);
+  const [workouts, setWorkouts] = useState<Workouts | null>(null);
+
+  useEffect(() => {
+    const fetchWorkouts = async () => {
+      const res = await fetch(`/api/public-profile/${params.user_name}`);
+      const data = await res.json();
+
+      setProfile(data?.data?.userData);
+      setWorkouts(data?.data?.workoutData);
+    };
+
+    fetchWorkouts();
+  }, [params.user_name]);
+
   return (
     <div>
-      <Suspense fallback={<div>Loading...</div>}>
-        <ProfileId params={params} />
-      </Suspense>
+      <div>Profile: {profile && profile.display_name}</div>
+      <div>
+        Workouts:{" "}
+        {workouts?.map((workout) => (
+          <div key={workout.id}>{workout.name}</div>
+        ))}
+      </div>
     </div>
   );
 }

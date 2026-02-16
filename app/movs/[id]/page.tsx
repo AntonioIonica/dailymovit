@@ -79,6 +79,7 @@ const MovsList = () => {
   const [workoutsLoading, setWorkoutsLoading] = useState(false);
   const [userId, setUserId] = useState<string | null>();
   const [exerciseChart, setExerciseChart] = useState<any>(null);
+  
   const params = useParams<{ id: string }>();
 
   // Setting data for the chart
