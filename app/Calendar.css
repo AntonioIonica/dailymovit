@@ -36,11 +36,22 @@
   outline: none;
 }
 
-.react-calendar button.workout_day {
+/* .react-calendar button.workout_day {
   margin: 0;
   border: 0;
   outline: none;
   background-color: rgba(64, 139, 64, 0.4);
+  border-radius: 50%;
+} */
+
+.react-calendar button.workout_day {
+  margin: 0;
+  border: 0;
+  outline: none;
+  background: none;
+  border-color: hsl(--var(border));
+  border-width: 3px;
+  border-style: solid;
   border-radius: 50%;
 }
 
@@ -218,6 +229,7 @@
     border: 0;
     outline: none;
   }
+
 
   .react-calendar button.workout_day {
     margin: 0;
