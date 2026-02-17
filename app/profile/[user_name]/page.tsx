@@ -33,11 +33,27 @@ export default function Profile() {
   // Fetch all workouts
   useEffect(() => {
     const fetchWorkouts = async () => {
-      const res = await fetch(`/api/public-profile/${params.user_name}`);
-      const data = await res.json();
+      if (!params.user_name) {
+        console.warn("(PROFILE) no user_name to fetch");
+        return;
+      }
 
-      setProfile(data?.data?.userData || null);
-      setWorkouts(data?.data?.workoutData || null);
+      try {
+        const res = await fetch(`/api/public-profile/${params.user_name}`);
+        if (!res.ok) {
+        
+          console.warn("(PROFILE) fetch failed");
+          setProfile(null);
+          setWorkouts(null);
+          return;
+        }
+
+        const data = await res.json();
+        setProfile(data?.data?.userData || null);
+        setWorkouts(data?.data?.workoutData || null);
+      } catch (error) {
+        console.error(`(PROFILE) fetch error. ${error}`);
+      }
     };
 
     fetchWorkouts();
