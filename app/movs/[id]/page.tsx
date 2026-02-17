@@ -179,7 +179,7 @@ const MovsList = () => {
     } finally {
       setWorkoutsLoading(false);
     }
-  }, [dateValue, dateWorkoutChart]);
+  }, [dateValue, dateWorkoutChart, allWorkouts]);
 
   if (userId !== params.id) {
     return <div>You are not logged in!</div>;
