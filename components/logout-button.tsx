@@ -18,7 +18,7 @@ export function LogoutButton() {
   return (
     <Button
       onClick={logout}
-      className="text-white font-bold hover:scale-110 hover:opacity-90"
+      className="text-gray-900 font-bold hover:scale-110 hover:opacity-90"
     >
       Logout
     </Button>

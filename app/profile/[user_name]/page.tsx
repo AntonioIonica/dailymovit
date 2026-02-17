@@ -118,11 +118,11 @@ export default function Profile() {
   const { maxWeight, maxWeightExercise } = getMaxWeightExercise(workouts);
 
   return (
-    <div className="flex max-h-screen w-screen p-10">
-      <div className="flex h-full max-h-[78vh] w-full flex-col space-y-3">
+    <div className="flex max-h-screen w-screen">
+      <div className="flex h-full max-h-[78vh] w-full flex-col space-y-3 px-10">
         {/* Profile */}
-        <div className="flex h-[20vh] w-full border-2 border-solid border-border bg-background">
-          <div className="flex h-full w-full flex-col border-2 border-solid border-border p-2">
+        <div className="card glow flex h-[250px] w-full">
+          <div className="flex h-full w-full flex-col p-2">
             <div className="flex space-x-4">
               <div className="mr-10">{profile?.avatar_url || ""}</div>
               <div className="flex space-x-2">
@@ -155,7 +155,7 @@ export default function Profile() {
             </div>
           </div>
 
-          <div className="flex h-full w-[700px] items-center justify-center space-x-4 p-3">
+          <div className="flex w-[750px] items-center justify-center space-x-4">
             <span>Share my profile: {"  "}</span>
             <button
               className="rounded-md border-2 border-solid border-border p-1"
@@ -174,8 +174,8 @@ export default function Profile() {
         </div>
 
         {/* Workouts */}
-        <div className="flex h-[80vh] w-full border-2 border-solid border-border bg-background">
-          <div className="h-full w-[40%] border-2 border-solid border-border">
+        <div className="flex h-[750px] w-full space-x-3">
+          <div className="card glow h-full w-[40%]">
             <CalendarContainer
               dateValue={dateValue}
               setDateValue={setDateValue}
@@ -185,9 +185,9 @@ export default function Profile() {
           </div>
 
           {/* Workouts list */}
-          <div className="h-full w-[60%] border-2 border-solid border-border">
-            <div className="h-full max-h-[64vh] w-[100%] overflow-y-auto">
-              <div className="container flex w-full flex-col items-start space-y-0">
+          <div className="card glow h-[100%] w-[60%]">
+            <div className="h-[100%] max-h-[64vh] w-[100%] overflow-y-auto">
+              <div className="container flex w-[100%] flex-col items-start space-y-0">
                 {!workoutsLoading ? (
                   dayWorkouts?.map((workout, index) => (
                     <div

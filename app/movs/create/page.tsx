@@ -100,7 +100,7 @@ const CreateMov = () => {
   // Fetch only the selected date workouts
   useEffect(() => {
     setWorkoutsLoading(true);
-    
+
     if (!dateValue) return;
 
     const dateString = moment(dateValue as Date).format("YYYY-MM-DD");
@@ -369,10 +369,10 @@ const CreateMov = () => {
   };
 
   return (
-    <div className="flex max-h-screen w-screen px-10">
+    <div className="flex h-[600px] max-h-screen w-screen px-10">
       <div className="mx-0 flex w-full px-0">
         {/* Side form */}
-        <div className="mb-10 mt-10 max-h-[78vh] min-h-[78vh] w-[22rem] flex-none items-center overflow-y-auto bg-primary-foreground p-2">
+        <div className="card glow h-full w-[358px] flex-none items-center overflow-x-hidden overflow-y-hidden">
           <form onSubmit={handleFinishWorkout} className="w-full space-y-1">
             <label htmlFor="workoutName">
               Workout name: <span className="text-sm">*editable</span>
@@ -393,7 +393,7 @@ const CreateMov = () => {
                 id="publicCheckbox"
                 name="publicCheckbox"
                 type="checkBox"
-                className="ml-4 h-5 w-5"
+                className="ml-4 h-5 w-5 accent-primary"
                 defaultChecked={true}
               />
             </div>
@@ -434,7 +434,7 @@ const CreateMov = () => {
                         <button
                           type="button"
                           onClick={() => deleteSet(exerciseIndex, setIndex)}
-                          className="mr-auto font-bold text-red-400 hover:scale-125 hover:outline-none"
+                          className="mr-auto font-bold text-primary hover:scale-125 hover:outline-none"
                         >
                           X
                         </button>
@@ -444,7 +444,7 @@ const CreateMov = () => {
                   <button
                     type="button"
                     onClick={() => deleteExercise(exerciseIndex)}
-                    className="ml-auto mt-2 rounded-sm bg-primary px-2 py-1 font-bold hover:scale-105 hover:bg-[#b2d16f]"
+                    className="ml-auto mt-2 rounded-sm bg-primary px-2 py-1 font-bold text-gray-900 hover:scale-105 hover:bg-secondary"
                   >
                     Delete exercise
                   </button>
@@ -454,7 +454,7 @@ const CreateMov = () => {
             <div className="flex justify-center">
               <button
                 type="submit"
-                className="mt-4 rounded-md bg-primary px-3 py-2 font-semibold uppercase text-black hover:scale-105 hover:bg-[#aad06cec]"
+                className="mt-4 rounded-md bg-primary px-3 py-2 font-semibold uppercase text-gray-900 hover:scale-105 hover:bg-secondary"
               >
                 Send the mov
               </button>
@@ -463,7 +463,7 @@ const CreateMov = () => {
         </div>
 
         {/* Central console */}
-        <div className="mx-4 mb-10 mt-10 min-h-[78vh] w-[16rem] flex-auto flex-col bg-primary-foreground p-2">
+        <div className="card glow mx-4 h-full w-[16rem] flex-auto flex-col p-2">
           <div className="flex flex-col items-center">
             {/* Exercise name */}
             <input
@@ -480,7 +480,7 @@ const CreateMov = () => {
               <div className="flex max-w-full flex-col space-y-2">
                 <span>Work time: {workDuration} s</span>
                 <button
-                  className="btn px-1 py-0.5"
+                  className="btn bg-secondary px-1 py-0.5 font-semibold"
                   disabled={isRunning}
                   onClick={handleStartTimer}
                 >
@@ -491,7 +491,7 @@ const CreateMov = () => {
               <div className="flex max-w-full flex-col space-y-2">
                 <span>Rest time: {restDuration} s</span>
                 <button
-                  className="btn px-1 py-0.5"
+                  className="btn px-1 py-0.5 font-semibold"
                   disabled={isBreak}
                   onClick={handleStopTimer}
                 >
@@ -525,7 +525,7 @@ const CreateMov = () => {
               onChange={(e) => handleSetRep(activeExercise, activeSet, e)}
               min={1}
               max={30}
-              className="scale-[230%]"
+              className="scale-[230%] accent-primary"
             />
 
             {/* Set details */}
@@ -539,7 +539,7 @@ const CreateMov = () => {
                     type="range"
                     name="rpe"
                     id="rpe"
-                    className="w-16"
+                    className="w-16 accent-primary"
                     value={exercises[activeExercise].sets[activeSet].rpe}
                     min={1}
                     max={10}
@@ -551,7 +551,7 @@ const CreateMov = () => {
               <button
                 onClick={() => addSet(activeExercise)}
                 type="button"
-                className="btn px-3 py-3 text-black"
+                className="btn px-3 py-3 font-semibold"
               >
                 Finish set
               </button>
@@ -578,7 +578,7 @@ const CreateMov = () => {
                 <button
                   type="button"
                   onClick={toggleDialog}
-                  className="btn !px-2 !py-1"
+                  className="btn !px-2 !py-1 font-semibold"
                 >
                   Add note
                 </button>
@@ -595,13 +595,14 @@ const CreateMov = () => {
                     }
                   }}
                 >
-                  <div className="flex flex-col items-center space-y-6 px-6 py-4">
+                  <div className="flex flex-col items-center space-y-6 px-6 py-4 card glow overflow-hidden">
                     <div>How was your exercise?</div>
                     <textarea
                       onChange={(e) => handleSetNotes(activeExercise, e)}
                       placeholder="Notes..."
                       maxLength={100}
                       value={exercises[activeExercise].notes}
+                      className="p-4"
                     />
                     <button type="button" onClick={toggleDialog}>
                       Close
@@ -613,7 +614,7 @@ const CreateMov = () => {
               <button
                 onClick={addExercise}
                 type="button"
-                className="btn mt-2 !px-4 !py-3"
+                className="btn mt-2 !px-4 !py-3 font-bold"
               >
                 Next exercise
               </button>
@@ -622,7 +623,7 @@ const CreateMov = () => {
         </div>
 
         {/* Calendar and details container */}
-        <div className="mb-10 mt-10 min-h-[78vh] w-[7rem] flex-auto flex-col items-center space-y-2 bg-primary-foreground p-2">
+        <div className="card glow h-full w-[7rem] flex-auto flex-col items-center space-y-2 p-2">
           {/* Calendar  */}
           <div className="h-[32%] w-full">
             <CalendarContainer

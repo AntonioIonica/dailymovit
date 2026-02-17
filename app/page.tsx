@@ -2,14 +2,14 @@ import { Hero } from "@/components/hero";
 
 export default function Home() {
   return (
-    <div className="flex flex-col items-center justify-between h-[90vh]">
+    <div className="flex h-[90vh] flex-col items-center justify-between">
       {/* Hero section */}
-      <div className="flex-1 flex flex-col max-w-screen p-5 items-center">
+      <div className="max-w-screen flex flex-1 flex-col items-center p-5">
         <Hero />
       </div>
 
       {/* Footer section */}
-      <footer className="w-screen flex items-center justify-center border-t mx-auto text-center text-xs gap-4 py-6">
+      <footer className="card glow mx-auto flex w-screen items-center justify-center gap-4 border-t py-6 text-center text-xs">
         <p>
           By{" "}
           <a

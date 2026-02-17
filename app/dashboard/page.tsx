@@ -40,7 +40,7 @@ export default function Dashboard() {
         .select("email, display_name, avatar_url, user_name")
         .eq("id", userData.id)
         .single();
-        
+
       setProfile(
         profile || {
           email: "",
@@ -108,13 +108,13 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="container max-h-[78vh] h-[78vh] flex flex-col bg-background p-10 items-center justify-center">
+    <div className="container flex h-[78vh] max-h-[78vh] flex-col items-center justify-center p-10">
       {!profile ? (
         <div>Loading...</div>
       ) : (
         <div className="container flex flex-col items-center">
           <form
-            className="flex flex-col space-y-2 p-6 border-border border-solid border-2 w-[380px]"
+            className="card glow flex w-[380px] flex-col space-y-2 border-2 border-solid border-border p-6"
             onSubmit={handleSubmitForm}
           >
             <label htmlFor="avatar_url">Paste you avatar URL here: </label>
@@ -124,6 +124,7 @@ export default function Dashboard() {
               onChange={(e) => handleChangeAvatar(e)}
               value={profile.avatar_url || ""}
               type="text"
+              className="pl-4"
             />
             <label htmlFor="display_name">Display name: </label>
             <input
@@ -132,6 +133,7 @@ export default function Dashboard() {
               id="display_name"
               value={profile.display_name}
               type="text"
+              className="pl-4"
             />
             <label htmlFor="email">Your email: </label>
             <input
@@ -140,6 +142,7 @@ export default function Dashboard() {
               value={profile.email}
               type="text"
               disabled
+              className="pl-4"
             />
             <label htmlFor="user_name">
               Your user name: *needed for unique page
@@ -151,6 +154,7 @@ export default function Dashboard() {
               value={profile.user_name || ""}
               type="text"
               placeholder="Your new username..."
+              className="pl-4"
             />
             <div>{usernameError || ""}</div>
             <button type="submit" className="btn mt-8">

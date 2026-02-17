@@ -210,7 +210,7 @@ const MovsList = () => {
       {/* Charts and general info */}
       <div className="streaks flex h-[30vh] w-full space-x-3">
         {/* Charts */}
-        <div className="flex w-[60%] bg-primary-foreground">
+        <div className="card glow flex w-[60%]">
           <div className="flex max-h-[100%] w-[100%] items-center justify-center p-2">
             <LineChart
               style={{
@@ -237,7 +237,7 @@ const MovsList = () => {
         </div>
 
         {/* General info */}
-        <div className="flex w-[40%] flex-col space-y-3 bg-primary-foreground px-6 py-3">
+        <div className="card glow flex w-[40%] flex-col space-y-3 bg-primary-foreground px-6 py-3">
           <div>Number of workouts: {allWorkouts?.length ?? 0}</div>
           <div>
             Total reps:{" "}
@@ -278,7 +278,7 @@ const MovsList = () => {
       {/* Container for workouts and calendar */}
       <div className="flex h-[54vh] w-full space-x-3">
         {/* Calendar */}
-        <div className="w-[40%] bg-primary-foreground">
+        <div className="card glow w-[40%] bg-primary-foreground">
           <CalendarContainer
             dateValue={dateValue}
             setDateValue={setDateValue}
@@ -288,7 +288,7 @@ const MovsList = () => {
         </div>
 
         {/* Workouts list */}
-        <div className="h-full w-[60%] bg-primary-foreground text-lg">
+        <div className="card glow h-full w-[60%] bg-primary-foreground text-lg">
           <div className="h-full max-h-[64vh] w-[100%] overflow-y-auto">
             <div className="container flex w-full flex-col items-start space-y-0">
               {!workoutsLoading ? (

@@ -8,7 +8,7 @@ export default function Navbar({ children }: { children: ReactNode }) {
   return (
     <main className="min-h-screen flex flex-col items-center">
       {/* Fixed Navbar */}
-      <nav className="z-10 w-full flex justify-center border-b border-b-foreground/10 h-16 fixed bg-background">
+      <nav className="navbar z-10 w-full flex justify-center border-b border-b-foreground/10 h-16 fixed">
         <div className="w-full max-w-5xl flex justify-between items-center p-3 px-5 text-md">
           <Link href={"/"}>
             <Logo />
@@ -23,7 +23,7 @@ export default function Navbar({ children }: { children: ReactNode }) {
       </nav>
 
       {/* Main content */}
-      <div className="container flex flex-col mt-16 items-center justify-center">
+      <div className="container flex flex-col mt-20 items-center justify-center">
         {children}
       </div>
     </main>
