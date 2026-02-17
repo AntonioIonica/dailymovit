@@ -91,8 +91,7 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
   const supabase = createClient();
-  const { searchParams } = new URL(req.url);
-  const date = searchParams.get("date");
+  // const { searchParams } = new URL(req.url);
 
   const {
     data: { user },
@@ -104,7 +103,7 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  let query = (await supabase)
+  const query = (await supabase)
     .from("workouts")
     .select(
       "id, duration, completed_at, name, public, exercises (id, name, notes, sets (id, set_number, reps, duration, weight, rest_time, rpe))",
@@ -112,20 +111,14 @@ export async function GET(req: NextRequest) {
     .order("completed_at", { ascending: false })
     .eq("user_id", user.id);
 
-  if (date) {
-    query = query
-      .gte("completed_at", new Date(`${date}T00:00:00.000Z`).toISOString())
-      .lte("completed_at", new Date(`${date}T23:59:59.999Z`).toISOString());
-  }
-
   const { data: workoutsData, error: workoutsError } = await query;
 
   if (workoutsError) {
     return NextResponse.json(
       { error: "There are no data in the specified interval" },
-      { status: 400 },
+      { status: 404 },
     );
   }
 
-  return NextResponse.json({ workouts: workoutsData });
+  return NextResponse.json({ workouts: workoutsData }, { status: 200 });
 }
