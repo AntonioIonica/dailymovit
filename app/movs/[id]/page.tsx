@@ -301,14 +301,14 @@ const MovsList = () => {
                       onClick={() =>
                         toggleWorkouts(index, setOpenWorkout, openWorkout)
                       }
-                      className="accordion text-md w-full text-start font-bold"
+                      className="text-md w-full text-start font-bold"
                     >
                       - {workout?.name}
                     </button>
 
                     {/* Details of each workout */}
                     {openWorkout === index && (
-                      <div className="panel w-full flex-col overflow-hidden">
+                      <div className="w-full flex-col overflow-hidden">
                         {/* Workout details */}
                         <div className="flex w-full space-x-6">
                           <span>Duration: {workout?.duration} sec</span>
@@ -321,7 +321,7 @@ const MovsList = () => {
                         {/* Exercises details */}
                         <div className="flex w-full flex-col">
                           <div className="flex flex-col">
-                            {workout?.exercises.map((exercises, index) => (
+                            {workout?.exercises.map((exercise, index) => (
                               <div
                                 key={index}
                                 className={`flex w-full flex-col px-2 py-1 ${index === openExercise ? "rounded-sm border-2 border-solid border-[#a1cb9f]" : ""}`}
@@ -338,15 +338,15 @@ const MovsList = () => {
                                       )
                                     }
                                   >
-                                    {exercises.name}
+                                    {exercise.name}
                                   </button>
-                                  {exercises.notes && (
-                                    <span>Notes: {exercises.notes}</span>
+                                  {exercise.notes && (
+                                    <span>Notes: {exercise.notes}</span>
                                   )}
                                 </div>
                                 {openExercise === index && (
                                   <div className="ml-8 flex flex-col text-sm">
-                                    {exercises.sets.map((set, index) => (
+                                    {exercise.sets.map((set, index) => (
                                       <ul
                                         key={index}
                                         className="flex w-full items-center justify-between px-3"

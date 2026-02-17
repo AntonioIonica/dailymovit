@@ -647,7 +647,7 @@ const CreateMov = () => {
                         onClick={() =>
                           toggleWorkouts(index, setOpenWorkout, openWorkout)
                         }
-                        className="accordion text-md w-full text-start font-bold"
+                        className="text-md w-full text-start font-bold"
                       >
                         {workout?.name}
                       </button>

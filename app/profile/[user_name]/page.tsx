@@ -1,9 +1,16 @@
 "use client";
 
-import { Workouts } from "@/app/movs/[id]/page";
+import {
+  DateValue,
+  parseLocalTime,
+  toggleExercises,
+  toggleWorkouts,
+  Workouts,
+} from "@/app/movs/[id]/page";
 import CalendarContainer from "@/components/CalendarContainer";
+import moment from "moment-timezone";
 import { useParams } from "next/navigation";
-import { ChangeEvent, MouseEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 type ProfileType = {
   id: string;
@@ -17,7 +24,13 @@ export default function Profile() {
 
   const [profile, setProfile] = useState<ProfileType | null>(null);
   const [workouts, setWorkouts] = useState<Workouts | null>(null);
+  const [dateValue, setDateValue] = useState<DateValue>(new Date());
+  const [dayWorkouts, setDayWorkouts] = useState<Workouts | null>(null);
+  const [workoutsLoading, setWorkoutsLoading] = useState(false);
+  const [openWorkout, setOpenWorkout] = useState<number | null>(null);
+  const [openExercise, setOpenExercise] = useState<number | null>(null);
 
+  // Fetch all workouts
   useEffect(() => {
     const fetchWorkouts = async () => {
       const res = await fetch(`/api/public-profile/${params.user_name}`);
@@ -29,6 +42,35 @@ export default function Profile() {
 
     fetchWorkouts();
   }, [params.user_name]);
+
+  // Set the daily selected workouts
+  useEffect(() => {
+    setWorkoutsLoading(true);
+    if (!dateValue) return;
+
+    const dateString = moment(dateValue as Date).format("YYYY-MM-DD");
+
+    try {
+      if (!workouts) return;
+
+      const data = workouts?.filter((workout) => {
+        if (
+          dateString ==
+          moment(workout.completed_at.toString()).format("YYYY-MM-DD")
+        ) {
+          return workout;
+        }
+      });
+
+      if (!data) return;
+
+      setDayWorkouts(data ?? null);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setWorkoutsLoading(false);
+    }
+  }, [dateValue, workouts]);
 
   // Get the exercise name with the max rep in set
   const getMaxRepExercise = (
@@ -134,10 +176,106 @@ export default function Profile() {
         {/* Workouts */}
         <div className="flex h-[80vh] w-full border-2 border-solid border-border bg-background">
           <div className="h-full w-[40%] border-2 border-solid border-border">
-            Calendar
+            <CalendarContainer
+              dateValue={dateValue}
+              setDateValue={setDateValue}
+              allWorkouts={workouts}
+              calSize="largeCal"
+            />
           </div>
+
+          {/* Workouts list */}
           <div className="h-full w-[60%] border-2 border-solid border-border">
-            workoutDetails
+            <div className="h-full max-h-[64vh] w-[100%] overflow-y-auto">
+              <div className="container flex w-full flex-col items-start space-y-0">
+                {!workoutsLoading ? (
+                  dayWorkouts?.map((workout, index) => (
+                    <div
+                      key={index}
+                      className="flex w-full flex-col rounded-sm px-4"
+                    >
+                      <button
+                        className="text-md w-full text-start font-bold"
+                        onClick={() => {
+                          toggleWorkouts(index, setOpenWorkout, openWorkout);
+                        }}
+                      >
+                        - {workout?.name}
+                      </button>
+
+                      {/* Details of workouts */}
+                      {openWorkout === index && (
+                        <div className="w-full flex-col overflow-hidden">
+                          {/* Workout details */}
+                          <div className="flex w-full space-x-6">
+                            <span>Duration: {workout?.duration} sec</span>
+                            <span className="italic">
+                              Completed at:{" "}
+                              {parseLocalTime(workout!.completed_at.toString())}
+                            </span>
+                          </div>
+
+                          {/* Exercise details */}
+                          <div className="flex w-full flex-col">
+                            <div className="flex flex-col">
+                              {workout?.exercises.map((exercise, index) => (
+                                <div
+                                  key={index}
+                                  className={`flex w-full flex-col px-2 py-1 ${index === openExercise ? "rounded-sm border-2 border-solid border-[#a1cb9f]" : ""}`}
+                                >
+                                  <div className="ml-4 flex space-x-4">
+                                    <button
+                                      className="underline"
+                                      onClick={() =>
+                                        toggleExercises(
+                                          index,
+                                          setOpenExercise,
+                                          openExercise,
+                                          openWorkout,
+                                        )
+                                      }
+                                    >
+                                      {exercise.name}
+                                    </button>
+                                    {exercise.notes && (
+                                      <span>Notes: {exercise.notes}</span>
+                                    )}
+                                  </div>
+
+                                  {openExercise === index && (
+                                    <div className="ml-8 flex flex-col text-sm">
+                                      {exercise?.sets.map((set, index) => (
+                                        <ul
+                                          key={index}
+                                          className="flex w-full items-center justify-between px-3"
+                                        >
+                                          <li>Set: {set.set_number || "-"}</li>
+                                          <li>Reps: {set.reps || "-"}</li>
+                                          <li>
+                                            Duration: {set.duration || "-"}
+                                          </li>
+                                          <li>
+                                            Rest time: {set.rest_time || "-"}
+                                          </li>
+                                          <li>Weight: {set.weight || "-"}</li>
+                                          <li>RPE: {set.rpe || "-"}</li>
+                                        </ul>
+                                      ))}
+                                    </div>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))
+                ) : (
+                  <div>Loading...</div>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </div>
