@@ -59,26 +59,6 @@ export default function Dashboard() {
     fetchProfile();
   }, [router]);
 
-  // useEffect(() => {
-  //   const duplicateUserName = async () => {
-  //     const supabase = createClient();
-  //     const { data } = await supabase
-  //       .from("profiles")
-  //       .select("id")
-  //       .eq("user_name", profile?.user_name)
-  //       .maybeSingle();
-
-  //     if (data) {
-  //       setUsernameError(
-  //         "The username is already taken. Please choose another one!",
-  //       );
-  //       return;
-  //     }
-  //   };
-
-  //   duplicateUserName();
-  // }, [profile?.user_name]);
-
   const handleSubmitForm = async (e: FormEvent) => {
     e.preventDefault();
 

@@ -153,30 +153,32 @@ const MovsList = () => {
 
   // Fetch only the selected date workouts
   useEffect(() => {
-    const fetchWorkouts = async () => {
-      setWorkoutsLoading(true);
+    setWorkoutsLoading(true);
+    if (!dateValue) return;
 
-      const dateString = moment(dateValue as Date).format("YYYY-MM-DD");
+    const dateString = moment(dateValue as Date).format("YYYY-MM-DD");
 
-      try {
-        const res = await fetch(`/api/workouts?date=${dateString}`);
+    try {
+      if (!allWorkouts) return;
 
-        if (!res.ok) {
-          setDayWorkouts(null);
-          return;
+      const data = allWorkouts?.filter((workout) => {
+        if (
+          dateString ==
+          moment(workout.completed_at.toString()).format("YYYY-MM-DD")
+        ) {
+          return workout;
         }
+      });
 
-        const data = await res.json();
-        setDayWorkouts(data.workouts ?? null);
-        dateWorkoutChart(data.workouts);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setWorkoutsLoading(false);
-      }
-    };
+      if (!data) return;
 
-    fetchWorkouts();
+      setDayWorkouts(data ?? null);
+      dateWorkoutChart(data ?? null);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setWorkoutsLoading(false);
+    }
   }, [dateValue, dateWorkoutChart]);
 
   if (userId !== params.id) {

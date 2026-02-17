@@ -99,30 +99,30 @@ const CreateMov = () => {
 
   // Fetch only the selected date workouts
   useEffect(() => {
-    const fetchWorkouts = async () => {
-      setWorkoutsLoading(true);
+    setWorkoutsLoading(true);
+    
+    if (!dateValue) return;
 
-      const dateString = moment(dateValue as Date).format("YYYY-MM-DD");
+    const dateString = moment(dateValue as Date).format("YYYY-MM-DD");
 
-      try {
-        const res = await fetch(`/api/workouts?date=${dateString}`);
+    try {
+      if (!allWorkouts) return;
 
-        if (!res.ok) {
-          setDayWorkouts(null);
-          return;
+      const data = allWorkouts?.filter((workout) => {
+        if (
+          dateString ==
+          moment(workout?.completed_at.toString()).format("YYYY-MM-DD")
+        ) {
+          return workout;
         }
-
-        const data = await res.json();
-        setDayWorkouts(data.workouts ?? null);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setWorkoutsLoading(false);
-      }
-    };
-
-    fetchWorkouts();
-  }, [dateValue]);
+      });
+      setDayWorkouts(data as Workouts);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setWorkoutsLoading(false);
+    }
+  }, [dateValue, allWorkouts]);
 
   function initialTimer() {
     setIsBreak(false);
@@ -369,14 +369,11 @@ const CreateMov = () => {
   };
 
   return (
-    <div className="flex w-screen max-h-screen px-10">
-      <div className="flex w-full px-0 mx-0">
+    <div className="flex max-h-screen w-screen px-10">
+      <div className="mx-0 flex w-full px-0">
         {/* Side form */}
-        <div
-          className="flex-none w-[22rem] items-center mt-10
-         mb-10 min-h-[78vh] max-h-[78vh] overflow-y-auto bg-primary-foreground p-2"
-        >
-          <form onSubmit={handleFinishWorkout} className="space-y-1 w-full">
+        <div className="mb-10 mt-10 max-h-[78vh] min-h-[78vh] w-[22rem] flex-none items-center overflow-y-auto bg-primary-foreground p-2">
+          <form onSubmit={handleFinishWorkout} className="w-full space-y-1">
             <label htmlFor="workoutName">
               Workout name: <span className="text-sm">*editable</span>
             </label>
@@ -388,8 +385,7 @@ const CreateMov = () => {
               maxLength={25}
               placeholder="New workout..."
               onChange={(e) => handleWorkoutName(e)}
-              className="w-full pl-6 focus:outline-none focus:ring-2 focus:ring-primary
-               focus:border-transparent focus:rounded-sm rounded-sm focus:scale-[101%]"
+              className="w-full rounded-sm pl-6 focus:scale-[101%] focus:rounded-sm focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
             />
             <div className="flex items-center">
               <label htmlFor="publicCheckbox">Public workout: </label>
@@ -397,7 +393,7 @@ const CreateMov = () => {
                 id="publicCheckbox"
                 name="publicCheckbox"
                 type="checkBox"
-                className="ml-4 w-5 h-5"
+                className="ml-4 h-5 w-5"
                 defaultChecked={true}
               />
             </div>
@@ -406,29 +402,29 @@ const CreateMov = () => {
               <div
                 className={`p-2 ${
                   exerciseIndex == activeExercise
-                    ? "border-solid border-2 rounded-sm border-primary"
+                    ? "rounded-sm border-2 border-solid border-primary"
                     : ""
                 }`}
                 key={exerciseIndex}
               >
-                <div className="w-full flex flex-col">
+                <div className="flex w-full flex-col">
                   <input
                     value={exercise.exerciseName}
                     type="text"
                     placeholder="Exercise name"
                     onChange={(e) => handleExerciseName(exerciseIndex, e)}
-                    className="w-full mb-2 pl-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent focus:rounded-sm rounded-sm focus:scale-[101%]"
+                    className="mb-2 w-full rounded-sm pl-2 focus:scale-[101%] focus:rounded-sm focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                   {exercise.sets.map((set, setIndex) => (
                     <div
                       key={setIndex}
                       className={`containerSet ml-3 ${
                         setIndex == activeSet && exerciseIndex == activeExercise
-                          ? "border-solid border-2 rounded-sm border-primary"
+                          ? "rounded-sm border-2 border-solid border-primary"
                           : ""
                       }`}
                     >
-                      <div className="wrapperSet flex justify-between space-x-4 mx-2">
+                      <div className="wrapperSet mx-2 flex justify-between space-x-4">
                         <div className="flex items-center justify-between space-x-2 text-sm">
                           <div className="mr-2">{set.set_number}.</div>
                           <div>Reps: {set.reps}</div>
@@ -438,7 +434,7 @@ const CreateMov = () => {
                         <button
                           type="button"
                           onClick={() => deleteSet(exerciseIndex, setIndex)}
-                          className="mr-auto text-red-400 font-bold hover:outline-none hover:scale-125"
+                          className="mr-auto font-bold text-red-400 hover:scale-125 hover:outline-none"
                         >
                           X
                         </button>
@@ -448,7 +444,7 @@ const CreateMov = () => {
                   <button
                     type="button"
                     onClick={() => deleteExercise(exerciseIndex)}
-                    className="ml-auto mt-2 font-bold py-1 px-2 bg-primary rounded-sm hover:scale-105 hover:bg-[#b2d16f]"
+                    className="ml-auto mt-2 rounded-sm bg-primary px-2 py-1 font-bold hover:scale-105 hover:bg-[#b2d16f]"
                   >
                     Delete exercise
                   </button>
@@ -458,8 +454,7 @@ const CreateMov = () => {
             <div className="flex justify-center">
               <button
                 type="submit"
-                className="rounded-md font-semibold 
-            px-3 py-2 text-black bg-primary mt-4 hover:scale-105 hover:bg-[#aad06cec] uppercase"
+                className="mt-4 rounded-md bg-primary px-3 py-2 font-semibold uppercase text-black hover:scale-105 hover:bg-[#aad06cec]"
               >
                 Send the mov
               </button>
@@ -468,7 +463,7 @@ const CreateMov = () => {
         </div>
 
         {/* Central console */}
-        <div className="flex-auto w-[16rem] flex-col mt-10 mb-10 mx-4 bg-primary-foreground p-2 min-h-[78vh]">
+        <div className="mx-4 mb-10 mt-10 min-h-[78vh] w-[16rem] flex-auto flex-col bg-primary-foreground p-2">
           <div className="flex flex-col items-center">
             {/* Exercise name */}
             <input
@@ -477,13 +472,12 @@ const CreateMov = () => {
               placeholder="New workout..."
               value={exercises[activeExercise].exerciseName}
               onChange={(e) => handleExerciseName(activeExercise, e)}
-              className="text-center py-2 text-lg mt-2 focus:outline-none focus:ring-2
-                 focus:ring-primary focus:border-transparent rounded-sm focus:scale-[101%]"
+              className="mt-2 rounded-sm py-2 text-center text-lg focus:scale-[101%] focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
             />
 
             {/* Exercise duration */}
-            <div className="flex items-center justify-between max-w-[100%] mt-4 space-x-16">
-              <div className="flex flex-col max-w-full space-y-2">
+            <div className="mt-4 flex max-w-[100%] items-center justify-between space-x-16">
+              <div className="flex max-w-full flex-col space-y-2">
                 <span>Work time: {workDuration} s</span>
                 <button
                   className="btn px-1 py-0.5"
@@ -494,7 +488,7 @@ const CreateMov = () => {
                 </button>
               </div>
 
-              <div className="flex flex-col max-w-full space-y-2">
+              <div className="flex max-w-full flex-col space-y-2">
                 <span>Rest time: {restDuration} s</span>
                 <button
                   className="btn px-1 py-0.5"
@@ -507,18 +501,18 @@ const CreateMov = () => {
             </div>
 
             {/* Central reps */}
-            <div className="flex justify-center items-center my-3">
+            <div className="my-3 flex items-center justify-center">
               <button
-                className="py-4 px-4 flex items-center justify-center text-5xl"
+                className="flex items-center justify-center px-4 py-4 text-5xl"
                 onClick={decrementRep}
               >
                 -
               </button>
-              <div className="flex items-center justify-center text-7xl p-10 w-[15rem]">
+              <div className="flex w-[15rem] items-center justify-center p-10 text-7xl">
                 {exercises[activeExercise].sets[activeSet].reps}
               </div>
               <button
-                className="py-4 px-4 flex items-center justify-center text-5xl"
+                className="flex items-center justify-center px-4 py-4 text-5xl"
                 onClick={incrementRep}
               >
                 +
@@ -535,8 +529,8 @@ const CreateMov = () => {
             />
 
             {/* Set details */}
-            <div className="flex space-x-8 items-center justify-center mt-12 w-full">
-              <div className="flex flex-col space-y-0 items-center">
+            <div className="mt-12 flex w-full items-center justify-center space-x-8">
+              <div className="flex flex-col items-center space-y-0">
                 <label htmlFor="rpe">
                   RPE: {exercises[activeExercise].sets[activeSet].rpe}
                 </label>
@@ -565,8 +559,7 @@ const CreateMov = () => {
               {/* Weight container */}
               <span className="flex flex-col space-y-1">
                 <input
-                  className="max-w-16 flex items-center pl-2 rounded-sm
-                   focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent focus:scale-[101%]"
+                  className="flex max-w-16 items-center rounded-sm pl-2 focus:scale-[101%] focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
                   type="number"
                   value={exercises[activeExercise]?.sets[activeSet]?.weight}
                   placeholder="KG/LB"
@@ -580,7 +573,7 @@ const CreateMov = () => {
               </span>
             </div>
 
-            <div className="flex flex-col mt-4 space-y-4">
+            <div className="mt-4 flex flex-col space-y-4">
               <div className="text-center">
                 <button
                   type="button"
@@ -592,7 +585,7 @@ const CreateMov = () => {
               </div>
 
               {/* Dialog for exercise notes */}
-              <div className="absolute top-0 left-[50%]">
+              <div className="absolute left-[50%] top-0">
                 <dialog
                   className="rounded-md"
                   ref={dialogRef}
@@ -620,7 +613,7 @@ const CreateMov = () => {
               <button
                 onClick={addExercise}
                 type="button"
-                className="btn !px-4 !py-3 mt-2"
+                className="btn mt-2 !px-4 !py-3"
               >
                 Next exercise
               </button>
@@ -629,12 +622,9 @@ const CreateMov = () => {
         </div>
 
         {/* Calendar and details container */}
-        <div
-          className="flex-auto flex-col w-[7rem] items-center mt-10 mb-10 
-        min-h-[78vh] bg-primary-foreground p-2 space-y-2"
-        >
+        <div className="mb-10 mt-10 min-h-[78vh] w-[7rem] flex-auto flex-col items-center space-y-2 bg-primary-foreground p-2">
           {/* Calendar  */}
-          <div className="w-full h-[32%]">
+          <div className="h-[32%] w-full">
             <CalendarContainer
               dateValue={dateValue}
               setDateValue={setDateValue}
@@ -644,28 +634,27 @@ const CreateMov = () => {
           </div>
 
           {/* Workout details */}
-          <div className="w-full max-h-[67%] h-[67%]">
-            <div className="w-[100%] h-full max-h-full overflow-y-auto">
-              <div className="container flex flex-col items-start w-full space-y-0">
+          <div className="h-[67%] max-h-[67%] w-full">
+            <div className="h-full max-h-full w-[100%] overflow-y-auto">
+              <div className="container flex w-full flex-col items-start space-y-0">
                 {!workoutsLoading ? (
                   dayWorkouts?.map((workout, index) => (
                     <div
-                      className="w-full border-2 border-solid 
-                    rounded-sm border-primary px-4 flex flex-col"
+                      className="flex w-full flex-col rounded-sm border-2 border-solid border-primary px-4"
                       key={index}
                     >
                       <button
                         onClick={() =>
                           toggleWorkouts(index, setOpenWorkout, openWorkout)
                         }
-                        className="accordion w-full text-start font-bold text-md"
+                        className="accordion text-md w-full text-start font-bold"
                       >
                         {workout?.name}
                       </button>
 
                       {/* Details of eah workout */}
                       {openWorkout === index && (
-                        <div className="panel overflow-hidden flex-col w-full">
+                        <div className="panel w-full flex-col overflow-hidden">
                           {/* Workout details */}
                           <div className="flex w-full space-x-6">
                             <span>Duration: {workout?.duration} sec</span>
@@ -681,9 +670,9 @@ const CreateMov = () => {
                               {workout?.exercises.map((exercises, index) => (
                                 <div
                                   key={index}
-                                  className="flex flex-col w-full"
+                                  className="flex w-full flex-col"
                                 >
-                                  <div className="flex space-x-4 ml-4">
+                                  <div className="ml-4 flex space-x-4">
                                     <button
                                       className="underline"
                                       onClick={() =>
@@ -702,7 +691,7 @@ const CreateMov = () => {
                                     )}
                                   </div>
                                   {openExercise === index && (
-                                    <div className="flex flex-col text-sm ml-6">
+                                    <div className="ml-6 flex flex-col text-sm">
                                       {exercises.sets.map((set, index) => (
                                         <ul
                                           key={index}

@@ -1,8 +1,9 @@
 "use client";
 
 import { Workouts } from "@/app/movs/[id]/page";
+import CalendarContainer from "@/components/CalendarContainer";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { ChangeEvent, MouseEvent, useEffect, useState } from "react";
 
 type ProfileType = {
   id: string;
@@ -79,14 +80,17 @@ export default function Profile() {
       <div className="flex h-full max-h-[78vh] w-full flex-col space-y-3">
         {/* Profile */}
         <div className="flex h-[20vh] w-full border-2 border-solid border-border bg-background">
-          <div className="flex h-full w-full flex-col border-2 border-solid border-border">
+          <div className="flex h-full w-full flex-col border-2 border-solid border-border p-2">
             <div className="flex space-x-4">
               <div className="mr-10">{profile?.avatar_url || ""}</div>
-              <div>Name: {profile?.display_name}</div>
+              <div className="flex space-x-2">
+                <span>Name:</span>
+                <span className="text-gray-200">{profile?.display_name}</span>
+              </div>
             </div>
 
-            <div className="text-sm flex flex-col space-y-0">
-              <div>Public workouts</div>
+            <div className="flex flex-col space-y-0 text-sm">
+              <div className="ml-4 font-bold">Public workouts</div>
               <div>
                 Total reps:{" "}
                 {workouts
@@ -108,14 +112,31 @@ export default function Profile() {
               </div>
             </div>
           </div>
+
+          <div className="flex h-full w-[700px] items-center justify-center space-x-4 p-3">
+            <span>Share my profile: {"  "}</span>
+            <button
+              className="rounded-md border-2 border-solid border-border p-1"
+              onClick={() => {
+                navigator.clipboard.writeText(
+                  `http://localhost:3000/profile/${params.user_name}`,
+                );
+                alert(
+                  `Copied: ${`http://localhost:3000/profile/${params.user_name}`}`,
+                );
+              }}
+            >
+              {`http://localhost:3000/profile/${params.user_name}`}
+            </button>
+          </div>
         </div>
 
         {/* Workouts */}
         <div className="flex h-[80vh] w-full border-2 border-solid border-border bg-background">
-          <div className="h-full w-[35%] border-2 border-solid border-border">
-            calendar
+          <div className="h-full w-[40%] border-2 border-solid border-border">
+            Calendar
           </div>
-          <div className="h-full w-[65%] border-2 border-solid border-border">
+          <div className="h-full w-[60%] border-2 border-solid border-border">
             workoutDetails
           </div>
         </div>
