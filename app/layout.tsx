@@ -5,8 +5,8 @@ import "./globals.css";
 import Navbar from "@/components/NavBar";
 import { Suspense } from "react";
 
-const defaultUrl = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}`
+const defaultUrl = process.env.NEXT_PUBLIC_VERCEL_URL
+  ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
   : "http://localhost:3000";
 
 export const metadata: Metadata = {

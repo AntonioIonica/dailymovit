@@ -176,14 +176,14 @@ export default function Profile() {
               className="rounded-md border-2 border-solid border-border p-1"
               onClick={() => {
                 navigator.clipboard.writeText(
-                  `http://localhost:3000/profile/${params.user_name}`,
+                  `${process.env.NEXT_PUBLIC_VERCEL_URL}/profile/${params.user_name}`,
                 );
                 alert(
-                  `Copied: ${`http://localhost:3000/profile/${params.user_name}`}`,
+                  `Copied: ${`${process.env.NEXT_PUBLIC_VERCEL_URL}/profile/${params.user_name}`}`,
                 );
               }}
             >
-              {`http://localhost:3000/profile/${params.user_name}`}
+              {`${process.env.NEXT_PUBLIC_VERCEL_URL}/profile/${params.user_name}`}
             </button>
           </div>
         </div>
