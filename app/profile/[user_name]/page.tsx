@@ -41,7 +41,6 @@ export default function Profile() {
       try {
         const res = await fetch(`/api/public-profile/${params.user_name}`);
         if (!res.ok) {
-        
           console.warn("(PROFILE) fetch failed");
           setProfile(null);
           setWorkouts(null);
@@ -134,8 +133,8 @@ export default function Profile() {
   const { maxWeight, maxWeightExercise } = getMaxWeightExercise(workouts);
 
   return (
-    <div className="flex max-h-screen w-screen">
-      <div className="flex h-full max-h-[78vh] w-full flex-col space-y-3 px-10">
+    <div className="flex h-full max-h-screen w-screen">
+      <div className="flex h-full max-h-[85vh] w-full flex-col space-y-3 px-10">
         {/* Profile */}
         <div className="card glow flex h-[250px] w-full">
           <div className="flex h-full w-full flex-col p-2">

@@ -1,5 +1,8 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { DemoCarousel } from "./ui/DemoCarousel";
 
 export default function Hero() {
   return (
@@ -91,8 +94,8 @@ export default function Hero() {
       </section>
 
       {/* Proof */}
-      <section className="mx-auto mt-6 h-screen max-w-6xl px-10 py-20">
-        <div className="mx-auto"></div>
+      <section className="mx-auto h-screen max-w-6xl px-10">
+        <DemoCarousel />
       </section>
 
       {/* CTA */}

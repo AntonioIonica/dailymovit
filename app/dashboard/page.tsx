@@ -156,6 +156,7 @@ export default function Dashboard() {
               placeholder="Your new username..."
               className="pl-4"
             />
+            {!profile.user_name && <div>Please set your user name so you can share your profile!</div>}
             <div>{usernameError || ""}</div>
             <button type="submit" className="btn mt-8">
               Update profile

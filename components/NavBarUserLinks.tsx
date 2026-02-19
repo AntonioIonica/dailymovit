@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 export default async function NavBarUserLinks() {
   const supabase = await createClient();
 
+
   const { data: userData } = await supabase.auth.getClaims();
   const user = userData?.claims;
 
@@ -15,7 +16,7 @@ export default async function NavBarUserLinks() {
 
   const profileLink = profileData?.user_name
     ? `/profile/${profileData.user_name}`
-    : `/movs/${user?.sub}`;
+    : `/dashboard`;
 
   return (
     <>
