@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { DemoCarousel } from "./ui/DemoCarousel";
+import DemoCarousel from "./DemoCarousel";
 
 export default function Hero() {
   return (

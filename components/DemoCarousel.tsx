@@ -29,7 +29,7 @@ const imagesData = [
   },
 ];
 
-export function DemoCarousel() {
+export default function DemoCarousel() {
   return (
     <Carousel className="w-full">
       <CarouselContent>
