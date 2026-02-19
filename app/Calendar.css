@@ -176,15 +176,15 @@
     max-width: 100%;
     max-height: 100%;
     background: 102 45 6;
-    line-height: 0.6em;
+    line-height: 0.7em;
     color: rgb(204, 206, 217);
-    font-size: large;
+    font-size: medium;
   }
 
   .react-calendar__tile {
     max-width: 90%;
     max-height: 90%;
-    padding: 1.8em;
+    padding: 1.5em;
     background: none;
     text-align: center;
     font: inherit;

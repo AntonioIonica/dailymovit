@@ -20,10 +20,10 @@ export default async function NavBarUserLinks() {
   return (
     <>
       <Link className="navbar-links animate-bounce" href={"/movs/create"}>
-        Start Workout
+        Start Mov
       </Link>
       <Link className="navbar-links" href={profileLink}>
-        Share my profile
+        Share My Mov
       </Link>
       <Link className="navbar-links" href={`/movs/${user?.sub}`}>
         My Movs

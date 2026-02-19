@@ -206,7 +206,7 @@ const MovsList = () => {
   };
 
   return (
-    <div className="flex max-h-screen min-h-[78vh] w-screen flex-col space-y-3 px-10">
+    <div className="flex max-h-[95vh] min-h-[78vh] w-screen flex-col space-y-3 px-10">
       {/* Charts and general info */}
       <div className="streaks flex h-[30vh] w-full space-x-3">
         {/* Charts */}
@@ -278,7 +278,7 @@ const MovsList = () => {
       {/* Container for workouts and calendar */}
       <div className="flex h-[54vh] w-full space-x-3">
         {/* Calendar */}
-        <div className="card glow w-[40%] bg-primary-foreground">
+        <div className="card glow h-[54vh] w-[40%] bg-primary-foreground">
           <CalendarContainer
             dateValue={dateValue}
             setDateValue={setDateValue}
