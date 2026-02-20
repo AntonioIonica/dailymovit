@@ -10,27 +10,25 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/AntonioIonica/the-wild-cabin">
-    <img src="./public/logo-light.png" alt="Logo" width="80" height="80">
+  <a href="https://github.com/AntonioIonica/dailymovit">
+    <img src="./public/logo.png" alt="logo" width="80" height="80">
   </a>
 
-<h3 align="center">The Wild Cabin</h3>
+<h3 align="center">DailyMovIt</h3>
 
   <p align="center">
-    Hotel management web app where employees can manage bookings, cabins and guests. The site is populated already with examples.
+    Workout tracker web application (PWA) where users can track their progress with the help of charts and share profile feature.
     <br />
-    <a href="https://github.com/AntonioIonica/the-wild-cabin"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/AntonioIonica/dailymovit"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/AntonioIonica/the-wild-cabin">View Demo</a>
+    <a href="https://github.com/AntonioIonica/dailymovit">View Demo</a>
     &middot;
-    <a href="https://github.com/AntonioIonica/the-wild-cabin/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
+    <a href="https://github.com/AntonioIonica/dailymovit/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
     &middot;
-    <a href="https://github.com/AntonioIonica/the-wild-cabin/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
+    <a href="https://github.com/AntonioIonica/dailymovit/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
   </p>
 </div>
-
-
 
 <!-- TABLE OF CONTENTS -->
 <details>
@@ -58,48 +56,55 @@
   </ol>
 </details>
 
-
-
 <!-- ABOUT THE PROJECT -->
+
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://ibb.co/DD7bXPzX)
+[![Product Name Screen Shot][product-screenshot]](https://ibb.co/NkbfGJB)
 
-Another tutorial project where I followed James Schmedtmann guide with the goal of learning multiple technologies. 
-Hotel management platform with closed account creation for the employees. They manage the guests check in and check out and create records of cabins.
+Ease to use PWA app, working on both mobile and desktop, where users can login with their Google account and save their workouts for further progress check using charts. The user profile can be shared publicly after user enter an unique user name so their friends can track their streaks using a calendar.
 
 Key features:
-  - hotel employees can login, as there is no register page-only employees can access the platform
-  - visual statistics for bookings, cabins
-  - real time update of cabins using Supabase
-  - account setting for employees
-  - managing cabins
-  - dark mode
 
-Topics I learned: 
-  - authentication and authorization using Supabase
-  - state management using React Query
-  - dark mode
-  - data visualization using Recharts
-  - React hot toast
+- save progress on their own user data set
+- workouts can be public or not
+- works on web and mobile (PWA)
+- easy login with Google
+- share profile to anyone
+- charts to see compare progress and streaks
+- timer for work and rest time
+- track your routines
+- dark mode by default
+- calendar for streaks and data vizualization
+
+Topics I learned:
+
+- authentication and authorization using Supabase
+- dark mode
+- data visualization using Recharts
+- date manipulation
+- routes query separation
+- fetching data from Supabase (PostgreSQL) in different components
+- styling components for different views
+- lodash array manipulation
+- calendar tied to a chart
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 ### Built With
 
-* React [![React][react.dev]][React-url]
-* Supabase [![Supabase][supabase.com]][Supabase-url]
-* Recharts [[Recharts-url]]
-* Styled components [![Styled components][styled-components.com]][Styled Components-url]
-* Vite [![Vite][vite.dev]][Vite-url]
+- React [![React][react.dev]][React-url]
+- Next.js [![Next.js][nextjs.org]][Nextjs-url]
+- ShadCN [![UIShadcn][ui.shadcn.com]][ShadCN-url]
+- Supabase [![Supabase][supabase.com]][Supabase-url]
+- Recharts [![Recharts][Recharts-url]]
+- Vite [![Vite][vite.dev]][Vite-url]
+- React Calendar [![ReactCalendar]][ReactCalendar-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
 <!-- GETTING STARTED -->
+
 ## Getting Started
 
 This is an example of how you may give instructions on setting up your project locally.
@@ -107,8 +112,7 @@ To get a local copy up and running follow these simple example steps.
 
 ### Prerequisites
 
-
-* npm
+- npm
   ```sh
   npm install npm@latest -g
   ```
@@ -117,7 +121,7 @@ To get a local copy up and running follow these simple example steps.
 
 1. Clone the repo
    ```sh
-   git clone https://github.com/AntonioIonica/the-wild-cabin
+   git clone https://github.com/AntonioIonica/dailymovit
    ```
 2. Install NPM packages
    ```sh
@@ -129,37 +133,34 @@ To get a local copy up and running follow these simple example steps.
    git remote -v # confirm the changes
    ```
 4. Start the project
-   ``` sh
+   ```sh
    npm run start
    ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
 <!-- USAGE EXAMPLES -->
+
 ## Usage
 
-This project goal is to master the mentioned technologies as the code is intellectual property of Schmedtmann
+This project was entirely written by me, so no "vibe coding" was involved as the purpose is to fail and to face difficulties in different scenarios and tools/languages.
 
+As the topic and difficulty of the project wasn't a great deal, the topic was a big interest as I have always wanted to have an online (also mobile) workouts tracker with a chart and a calendar. So I did it.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
 <!-- ROADMAP -->
+
 ## Roadmap
 
 - [x] populated cabins
-
 
 See the [open issues](https://github.com/AntonioIonica/the-wild-cabin/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
 <!-- CONTRIBUTING -->
+
 ## Contributing
 
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
@@ -180,37 +181,34 @@ Don't forget to give the project a star! Thanks again!
 -
 
 <!-- LICENSE -->
+
 ## License
 
 Distributed under the project_license. See `LICENSE.txt` for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
 <!-- CONTACT -->
+
 ## Contact
 
 Your Name - [@X](https://twitter.com/AntonioIonica) - antonioionica@gmail.com
 
-Project Link: [Github](https://github.com/AntonioIonica/the-wild-cabin)
+Project Link: [Github](https://github.com/AntonioIonica/dailymovit)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- ACKNOWLEDGMENTS -->
+
 ## Acknowledgments
 
-* [The code and the instructions were provided by James Schmedtmann as the code is owned by him, made public only for learning purpose. James Schmedtman X account](https://x.com/jonasschmedtman)
-
+Everything was written by me.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+
 [contributors-shield]: https://img.shields.io/github/contributors/AntonioIonica/the-wild-cabin.svg?style=for-the-badge
 [contributors-url]: https://github.com/AntonioIonica/the-wild-cabin/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/AntonioIonica/the-wild-cabin.svg?style=for-the-badge
@@ -224,13 +222,18 @@ Project Link: [Github](https://github.com/AntonioIonica/the-wild-cabin)
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/antonio-iulian-ionica-478074353/
 [product-screenshot]: ./public/project_screenshot.png
+
 <!-- Shields.io badges. You can a comprehensive list with many more badges at: https://github.com/inttter/md-badges -->
+
 [react.dev]: https://img.shields.io/badge/React-%2320232a.svg?logo=react&logoColor=%2361DAFB
-[React-url]: https://react.dev 
+[React-url]: https://react.dev
 [supabase.com]: https://img.shields.io/badge/Supabase-3FCF8E?logo=supabase&logoColor=fff
 [Supabase-url]: https://supabase.com
 [Recharts-url]: https://recharts.github.io
-[styled-components.com]: https://img.shields.io/badge/styled--components-DB7093?logo=styledcomponents&logoColor=fff
-[Styled Components-url]: https://styled-components.com
 [vite.dev]: https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=fff
 [Vite-url]: https://vite.dev
+[nextjs.org]: https://img.shields.io/badge/Next.js-black?logo=next.js&logoColor=white
+[Nextjs-url]: https://nextjs.org
+[ui.shadcn.com]: https://img.shields.io/badge/shadcn%2Fui-000?logo=shadcnui&logoColor=fff
+[ShadCN-url]: https://ui.shadcn.com
+[ReactCalendar-url]: https://www.npmjs.com/package/react-calendar
