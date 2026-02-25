@@ -209,19 +209,19 @@ Everything was written by me.
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
-[contributors-shield]: https://img.shields.io/github/contributors/AntonioIonica/the-wild-cabin.svg?style=for-the-badge
-[contributors-url]: https://github.com/AntonioIonica/the-wild-cabin/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/AntonioIonica/the-wild-cabin.svg?style=for-the-badge
-[forks-url]: https://github.com/AntonioIonica/the-wild-cabin/network/members
-[stars-shield]: https://img.shields.io/github/stars/AntonioIonica/the-wild-cabin.svg?style=for-the-badge
-[stars-url]: https://github.com/AntonioIonica/the-wild-cabin/stargazers
-[issues-shield]: https://img.shields.io/github/issues/AntonioIonica/the-wild-cabin.svg?style=for-the-badge
-[issues-url]: https://github.com/AntonioIonica/forkify-restaurant-boilerplate/issues
-[license-shield]: https://img.shields.io/github/license/AntonioIonica/the-wild-cabin.svg?style=for-the-badge
-[license-url]: https://github.com/AntonioIonica/the-wild-cabin/blob/master/LICENSE.txt
+[contributors-shield]: https://img.shields.io/github/contributors/AntonioIonica/dailymovit.svg?style=for-the-badge
+[contributors-url]: https://github.com/AntonioIonica/dailymovit/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/AntonioIonica/dailymovit.svg?style=for-the-badge
+[forks-url]: https://github.com/AntonioIonica/dailymovit/network/members
+[stars-shield]: https://img.shields.io/github/stars/AntonioIonica/dailymovit.svg?style=for-the-badge
+[stars-url]: https://github.com/AntonioIonica/dailymovit/stargazers
+[issues-shield]: https://img.shields.io/github/issues/AntonioIonica/dailymovit.svg?style=for-the-badge
+[issues-url]: https://github.com/AntonioIonica/dailymovit/issues
+[license-shield]: https://img.shields.io/github/license/AntonioIonica/dailymovit.svg?style=for-the-badge
+[license-url]: https://github.com/AntonioIonica/dailymovit/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/antonio-iulian-ionica-478074353/
-[product-screenshot]: ./public/project_screenshot.png
+[product-screenshot]: ./public/new-workouts.png
 
 <!-- Shields.io badges. You can a comprehensive list with many more badges at: https://github.com/inttter/md-badges -->
 
