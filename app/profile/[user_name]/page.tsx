@@ -8,6 +8,7 @@ import {
   Workouts,
 } from "@/app/movs/[id]/page";
 import CalendarContainer from "@/components/CalendarContainer";
+import { useQuery } from "@tanstack/react-query";
 import moment from "moment-timezone";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -22,41 +23,30 @@ type ProfileType = {
 export default function Profile() {
   const params = useParams<{ user_name: string }>();
 
-  const [profile, setProfile] = useState<ProfileType | null>(null);
-  const [workouts, setWorkouts] = useState<Workouts | null>(null);
   const [dateValue, setDateValue] = useState<DateValue>(new Date());
   const [dayWorkouts, setDayWorkouts] = useState<Workouts | null>(null);
   const [workoutsLoading, setWorkoutsLoading] = useState(false);
   const [openWorkout, setOpenWorkout] = useState<number | null>(null);
   const [openExercise, setOpenExercise] = useState<number | null>(null);
 
-  // Fetch all workouts
-  useEffect(() => {
-    const fetchWorkouts = async () => {
-      if (!params.user_name) {
-        console.warn("(PROFILE) no user_name to fetch");
-        return;
-      }
+  const {
+    // isPending,
+    isFetching,
+    data: fetchedData,
+    // error,
+  } = useQuery({
+    queryKey: ["workoutsAndProfile"],
+    queryFn: async (): Promise<{
+      workoutData: Workouts;
+      userData: ProfileType;
+    }> => {
+      const res = await fetch(`/api/public-profile/${params.user_name}`);
+      const result = await res.json();
 
-      try {
-        const res = await fetch(`/api/public-profile/${params.user_name}`);
-        if (!res.ok) {
-          console.warn("(PROFILE) fetch failed");
-          setProfile(null);
-          setWorkouts(null);
-          return;
-        }
-
-        const data = await res.json();
-        setProfile(data?.data?.userData || null);
-        setWorkouts(data?.data?.workoutData || null);
-      } catch (error) {
-        console.error(`(PROFILE) fetch error. ${error}`);
-      }
-    };
-
-    fetchWorkouts();
-  }, [params.user_name]);
+      return result.data;
+    },
+  });
+  console.log(fetchedData);
 
   // Set the daily selected workouts
   useEffect(() => {
@@ -66,9 +56,9 @@ export default function Profile() {
     const dateString = moment(dateValue as Date).format("YYYY-MM-DD");
 
     try {
-      if (!workouts) return;
+      if (!fetchedData?.workoutData) return;
 
-      const data = workouts?.filter((workout) => {
+      const data = fetchedData?.workoutData?.filter((workout) => {
         if (
           dateString ==
           moment(workout.completed_at.toString()).format("YYYY-MM-DD")
@@ -85,7 +75,7 @@ export default function Profile() {
     } finally {
       setWorkoutsLoading(false);
     }
-  }, [dateValue, workouts]);
+  }, [dateValue, fetchedData?.workoutData]);
 
   // Get the exercise name with the max rep in set
   const getMaxRepExercise = (
@@ -108,7 +98,9 @@ export default function Profile() {
 
     return { maxRep, maxRepsExercise };
   };
-  const { maxRep, maxRepsExercise } = getMaxRepExercise(workouts);
+  const { maxRep, maxRepsExercise } = getMaxRepExercise(
+    fetchedData?.workoutData || [],
+  );
 
   // Get the exercise name with the maximum weight lifted
   const getMaxWeightExercise = (
@@ -130,7 +122,9 @@ export default function Profile() {
 
     return { maxWeight, maxWeightExercise };
   };
-  const { maxWeight, maxWeightExercise } = getMaxWeightExercise(workouts);
+  const { maxWeight, maxWeightExercise } = getMaxWeightExercise(
+    fetchedData?.workoutData || [],
+  );
 
   return (
     <div className="flex h-full max-h-screen w-screen">
@@ -139,10 +133,14 @@ export default function Profile() {
         <div className="card glow flex h-[250px] w-full">
           <div className="flex h-full w-full flex-col p-2">
             <div className="flex space-x-4">
-              <div className="mr-10">{profile?.avatar_url || ""}</div>
+              <div className="mr-10">
+                {fetchedData?.userData?.avatar_url || ""}
+              </div>
               <div className="flex space-x-2">
                 <span>Name:</span>
-                <span className="text-gray-200">{profile?.display_name}</span>
+                <span className="text-gray-200">
+                  {fetchedData?.userData?.display_name}
+                </span>
               </div>
             </div>
 
@@ -150,7 +148,7 @@ export default function Profile() {
               <div className="ml-4 font-bold">Public workouts</div>
               <div>
                 Total reps:{" "}
-                {workouts
+                {fetchedData?.workoutData
                   ?.flatMap((workout) => workout.exercises)
                   .flatMap((exercise) => exercise.sets)
                   .reduce((sum, set) => sum + set.reps, 0)}
@@ -158,7 +156,9 @@ export default function Profile() {
               <div>
                 Longest workout:{" "}
                 {Math.max(
-                  ...(workouts?.map((workout) => workout.duration) || []),
+                  ...(fetchedData?.workoutData?.map(
+                    (workout) => workout.duration,
+                  ) || []),
                 ) ?? 0}
               </div>
               <div>
@@ -194,7 +194,7 @@ export default function Profile() {
             <CalendarContainer
               dateValue={dateValue}
               setDateValue={setDateValue}
-              allWorkouts={workouts}
+              workoutsData={fetchedData?.workoutData || []}
               calSize="largeCal"
             />
           </div>

@@ -8,12 +8,12 @@ import { Workouts } from "@/app/movs/[id]/page";
 const CalendarContainer = ({
   dateValue,
   setDateValue,
-  allWorkouts,
+  workoutsData,
   calSize = "smallCal",
 }: {
   dateValue: DateValue;
   setDateValue: React.Dispatch<React.SetStateAction<DateValue>>;
-  allWorkouts: Workouts;
+  workoutsData: Workouts;
   calSize: "smallCal" | "largeCal";
 }) => {
   return (
@@ -21,14 +21,14 @@ const CalendarContainer = ({
       <Calendar
         onChange={setDateValue}
         value={dateValue}
-        className={`text-md w-full h-full ${calSize}`}
+        className={`text-md h-full w-full ${calSize}`}
         defaultValue={new Date()}
         calendarType="gregory"
         tileClassName={({ date, view }) => {
           if (view !== "month") return "";
 
           // Check if there are any workouts in a day to mark it
-          const hasWorkout = allWorkouts?.some((workout) => {
+          const hasWorkout = workoutsData?.some((workout) => {
             const workoutDate = new Date(workout.completed_at);
 
             // Comparing by parsing to the same date type

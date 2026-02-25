@@ -9,6 +9,7 @@ import CalendarContainer from "@/components/CalendarContainer";
 import { CartesianGrid, Legend, Line, LineChart, XAxis, YAxis } from "recharts";
 import { RechartsDevtools } from "@recharts/devtools";
 import _ from "lodash";
+import { useQuery } from "@tanstack/react-query";
 
 type Workout = {
   id: string;
@@ -75,10 +76,24 @@ const MovsList = () => {
   const [openExercise, setOpenExercise] = useState<null | number>(null);
   const [dateValue, setDateValue] = useState<DateValue>(new Date());
   const [dayWorkouts, setDayWorkouts] = useState<Workouts | null>(null);
-  const [allWorkouts, setAllWorkouts] = useState<Workouts | []>([]);
   const [workoutsLoading, setWorkoutsLoading] = useState(false);
   const [userId, setUserId] = useState<string | null>();
   const [exerciseChart, setExerciseChart] = useState<any>(null);
+  
+  const {
+    // isPending,
+    isFetching,
+    data: workoutsData,
+    // error,
+  } = useQuery({
+    queryKey: ["workouts"],
+    queryFn: async (): Promise<Workouts> => {
+      const res = await fetch("/api/workouts");
+      const result = await res.json();
+
+      return result.workouts;
+    },
+  });
 
   const params = useParams<{ id: string }>();
 
@@ -94,7 +109,7 @@ const MovsList = () => {
       const exerciseName =
         workouts?.[openWorkout! || 0]?.exercises?.[openExercise! || 0]?.name;
 
-      allWorkouts?.forEach((workout) =>
+      workoutsData?.forEach((workout) =>
         workout.exercises.forEach((exercise) => {
           // For the exercises (from all) where it's included the active one
           if (exercise.name.includes(exerciseName!)) {
@@ -113,7 +128,7 @@ const MovsList = () => {
       // Get only the last 7 days
       setExerciseChart(sortedDataForChart.slice(-7, sortedDataForChart.length));
     },
-    [openExercise, openWorkout, allWorkouts],
+    [openExercise, openWorkout, workoutsData],
   );
 
   // get the current logged user
@@ -130,27 +145,6 @@ const MovsList = () => {
     fetchUser();
   }, []);
 
-  // Fetch all the account workouts
-  useEffect(() => {
-    const fetchAllWorkouts = async () => {
-      try {
-        const res = await fetch(`/api/workouts`);
-
-        if (!res.ok) {
-          setAllWorkouts([]);
-          return;
-        }
-
-        const data = await res.json();
-        setAllWorkouts(data.workouts ?? []);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchAllWorkouts();
-  }, []);
-
   // Fetch only the selected date workouts
   useEffect(() => {
     setWorkoutsLoading(true);
@@ -159,9 +153,9 @@ const MovsList = () => {
     const dateString = moment(dateValue as Date).format("YYYY-MM-DD");
 
     try {
-      if (!allWorkouts) return;
+      if (!workoutsData) return;
 
-      const data = allWorkouts?.filter((workout) => {
+      const data = workoutsData?.filter((workout) => {
         if (
           dateString ==
           moment(workout.completed_at.toString()).format("YYYY-MM-DD")
@@ -179,7 +173,7 @@ const MovsList = () => {
     } finally {
       setWorkoutsLoading(false);
     }
-  }, [dateValue, dateWorkoutChart, allWorkouts]);
+  }, [dateValue, dateWorkoutChart, workoutsData]);
 
   if (userId !== params.id) {
     return <div>You are not logged in!</div>;
@@ -238,40 +232,49 @@ const MovsList = () => {
 
         {/* General info */}
         <div className="card glow flex w-[40%] flex-col space-y-3 bg-primary-foreground px-6 py-3">
-          <div>Number of workouts: {allWorkouts?.length ?? 0}</div>
-          <div>
-            Total reps:{" "}
-            {allWorkouts
-              ?.flatMap((workout) => workout.exercises)
-              .flatMap((exercise) => exercise.sets)
-              .reduce((sum, set) => sum + set.reps, 0) ?? 0}
-          </div>
-          <div>
-            Longest workout:{" "}
-            {Math.max(
-              ...(allWorkouts?.map((workout) => workout.duration) || []),
-            ) ?? 0}
-          </div>
-          <div>
-            Highest reps count:{" "}
-            {Math.max(
-              ...(allWorkouts
-                ?.flatMap((workout) => workout.exercises)
-                .flatMap((exercise) => exercise.sets.map((set) => set.reps)) ||
-                []),
-            ) ?? 0}
-          </div>
-          <div>
-            Heaviest weight:{" "}
-            {Math.max(
-              ...(allWorkouts
-                ?.flatMap((workout) => workout.exercises)
-                .flatMap((exercise) =>
-                  exercise.sets.map((set) => set.weight),
-                ) || []),
-            ) ?? 0}{" "}
-            kg
-          </div>
+          {!isFetching ? (
+            <>
+              <div>Number of workouts: {workoutsData?.length ?? 0}</div>
+              <div>
+                Total reps:{" "}
+                {workoutsData
+                  ?.flatMap((workout) => workout.exercises)
+                  .flatMap((exercise) => exercise.sets)
+                  .reduce((sum, set) => sum + set.reps, 0) ?? 0}
+              </div>
+              <div>
+                Longest workout:{" "}
+                {Math.max(
+                  ...(workoutsData?.map((workout) => workout.duration) || []),
+                ) ?? 0}
+              </div>
+              <div>
+                Highest reps count:{" "}
+                {Math.max(
+                  ...(workoutsData
+                    ?.flatMap((workout) => workout.exercises)
+                    .flatMap((exercise) =>
+                      exercise.sets.map((set) => set.reps),
+                    ) || []),
+                ) ?? 0}
+              </div>
+              <div>
+                Heaviest weight:{" "}
+                {Math.max(
+                  ...(workoutsData
+                    ?.flatMap((workout) => workout.exercises)
+                    .flatMap((exercise) =>
+                      exercise.sets.map((set) => set.weight),
+                    ) || []),
+                ) ?? 0}{" "}
+                kg
+              </div>
+            </>
+          ) : (
+            <div className="flex h-full w-full items-center justify-center">
+              Loading...
+            </div>
+          )}
         </div>
       </div>
 
@@ -282,7 +285,7 @@ const MovsList = () => {
           <CalendarContainer
             dateValue={dateValue}
             setDateValue={setDateValue}
-            allWorkouts={allWorkouts}
+            workoutsData={workoutsData || []}
             calSize="largeCal"
           />
         </div>

@@ -11,6 +11,7 @@ import {
 import { DateValue } from "../[id]/page";
 import CalendarContainer from "@/components/CalendarContainer";
 import moment from "moment-timezone";
+import { useQuery } from "@tanstack/react-query";
 
 const CreateMov = () => {
   const [workout, setWorkout] = useState({
@@ -42,12 +43,27 @@ const CreateMov = () => {
   const [restDuration, setRestDuration] = useState<number>(0);
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [isBreak, setIsBreak] = useState<boolean>(false);
-  const [allWorkouts, setAllWorkouts] = useState<Workouts | []>([]);
   const [dateValue, setDateValue] = useState<DateValue>(new Date());
   const [workoutsLoading, setWorkoutsLoading] = useState(false);
   const [dayWorkouts, setDayWorkouts] = useState<Workouts | null>(null);
   const [openWorkout, setOpenWorkout] = useState<null | number>(null);
   const [openExercise, setOpenExercise] = useState<null | number>(null);
+
+  const {
+    // isPending,
+    isFetching,
+    data: workoutsData,
+    // error,
+  } = useQuery({
+    queryKey: ["workouts"],
+    queryFn: async (): Promise<Workouts> => {
+      const res = await fetch("/api/workouts");
+      const result = await res.json();
+
+      // API returning workouts
+      return result.workouts;
+    },
+  });
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -76,27 +92,6 @@ const CreateMov = () => {
     return () => clearInterval(timer);
   }, [isBreak, restDuration, isRunning, workDuration]);
 
-  // Fetch all the account workouts
-  useEffect(() => {
-    const fetchAllWorkouts = async () => {
-      try {
-        const res = await fetch(`/api/workouts`);
-
-        if (!res.ok) {
-          setAllWorkouts([]);
-          return;
-        }
-
-        const data = await res.json();
-        setAllWorkouts(data.workouts ?? []);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchAllWorkouts();
-  }, []);
-
   // Fetch only the selected date workouts
   useEffect(() => {
     setWorkoutsLoading(true);
@@ -106,9 +101,9 @@ const CreateMov = () => {
     const dateString = moment(dateValue as Date).format("YYYY-MM-DD");
 
     try {
-      if (!allWorkouts) return;
+      if (!workoutsData) return;
 
-      const data = allWorkouts?.filter((workout) => {
+      const data = workoutsData?.filter((workout) => {
         if (
           dateString ==
           moment(workout?.completed_at.toString()).format("YYYY-MM-DD")
@@ -122,7 +117,7 @@ const CreateMov = () => {
     } finally {
       setWorkoutsLoading(false);
     }
-  }, [dateValue, allWorkouts]);
+  }, [dateValue, workoutsData]);
 
   function initialTimer() {
     setIsBreak(false);
@@ -595,7 +590,7 @@ const CreateMov = () => {
                     }
                   }}
                 >
-                  <div className="flex flex-col items-center space-y-6 px-6 py-4 card glow overflow-hidden">
+                  <div className="card glow flex flex-col items-center space-y-6 overflow-hidden px-6 py-4">
                     <div>How was your exercise?</div>
                     <textarea
                       onChange={(e) => handleSetNotes(activeExercise, e)}
@@ -626,12 +621,18 @@ const CreateMov = () => {
         <div className="card glow h-full w-[7rem] flex-auto flex-col items-center space-y-2 p-2">
           {/* Calendar  */}
           <div className="h-[32%] w-full">
-            <CalendarContainer
-              dateValue={dateValue}
-              setDateValue={setDateValue}
-              allWorkouts={allWorkouts}
-              calSize="smallCal"
-            />
+            {!isFetching ? (
+              <CalendarContainer
+                dateValue={dateValue}
+                setDateValue={setDateValue}
+                workoutsData={workoutsData || []}
+                calSize="smallCal"
+              />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center">
+                Loading...
+              </div>
+            )}
           </div>
 
           {/* Workout details */}
