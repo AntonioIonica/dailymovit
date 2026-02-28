@@ -130,44 +130,50 @@ export default function Profile() {
       <div className="flex h-full max-h-[85vh] w-full flex-col space-y-3 px-10">
         {/* Profile */}
         <div className="card glow flex h-[250px] w-full">
-          <div className="flex h-full w-full flex-col p-2">
-            <div className="flex space-x-4">
-              <div className="mr-10">
-                {fetchedData?.userData?.avatar_url || ""}
+          {!isFetching ? (
+            <div className="flex h-full w-full flex-col p-2">
+              <div className="flex space-x-4">
+                <div className="mr-10">
+                  {fetchedData?.userData?.avatar_url || ""}
+                </div>
+                <div className="flex space-x-2">
+                  <span>Name:</span>
+                  <span className="text-gray-200">
+                    {fetchedData?.userData?.display_name}
+                  </span>
+                </div>
               </div>
-              <div className="flex space-x-2">
-                <span>Name:</span>
-                <span className="text-gray-200">
-                  {fetchedData?.userData?.display_name}
-                </span>
-              </div>
-            </div>
 
-            <div className="flex flex-col space-y-0 text-sm">
-              <div className="ml-4 font-bold">Public workouts</div>
-              <div>
-                Total reps:{" "}
-                {fetchedData?.workoutData
-                  ?.flatMap((workout) => workout.exercises)
-                  .flatMap((exercise) => exercise.sets)
-                  .reduce((sum, set) => sum + set.reps, 0)}
-              </div>
-              <div>
-                Longest workout:{" "}
-                {Math.max(
-                  ...(fetchedData?.workoutData?.map(
-                    (workout) => workout.duration,
-                  ) || []),
-                ) ?? 0}
-              </div>
-              <div>
-                Highest rep count: {maxRepsExercise}-{maxRep}
-              </div>
-              <div>
-                Highest weight lifted: {maxWeightExercise}-{maxWeight} kg
+              <div className="flex flex-col space-y-0 text-sm">
+                <div className="ml-4 font-bold">Public workouts</div>
+                <div>
+                  Total reps:{" "}
+                  {fetchedData?.workoutData
+                    ?.flatMap((workout) => workout.exercises)
+                    .flatMap((exercise) => exercise.sets)
+                    .reduce((sum, set) => sum + set.reps, 0)}
+                </div>
+                <div>
+                  Longest workout:{" "}
+                  {Math.max(
+                    ...(fetchedData?.workoutData?.map(
+                      (workout) => workout.duration,
+                    ) || []),
+                  ) ?? 0}
+                </div>
+                <div>
+                  Highest rep count: {maxRepsExercise}-{maxRep}
+                </div>
+                <div>
+                  Highest weight lifted: {maxWeightExercise}-{maxWeight} kg
+                </div>
               </div>
             </div>
-          </div>
+          ) : (
+            <div className="flex h-full w-full items-center justify-start">
+              Loading...
+            </div>
+          )}
 
           <div className="flex w-[750px] items-center justify-center space-x-4">
             <span>Share my profile: {"  "}</span>

@@ -1,8 +1,7 @@
 "use client";
 
-import { createClient } from "@/lib/supabase/client";
-import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 type ProfileType = {
   email: string;
@@ -12,91 +11,56 @@ type ProfileType = {
 };
 
 export default function Dashboard() {
-  const router = useRouter();
+  const queryClient = useQueryClient();
   const [profile, setProfile] = useState<ProfileType>({
     email: "",
     display_name: "",
     avatar_url: "",
     user_name: "",
   });
-  const [formResponse, setFormResponse] = useState<string>("");
-  const [usernameError, setUsernameError] = useState<string>("");
+
+  const { isFetching: isFetchingProfile, data: profileData } = useQuery({
+    queryKey: ["profile"],
+    queryFn: async (): Promise<ProfileType> => {
+      const res = await fetch("/api/dashboard");
+      const result = await res.json();
+
+      setProfile(profileData!);
+      console.log(profileData);
+      return result.data;
+    },
+  });
 
   useEffect(() => {
-    const fetchProfile = async () => {
-      const supabase = createClient();
+    setProfile(profileData!);
+  }, [profileData]);
 
-      const {
-        data: { user: userData },
-        error: userError,
-      } = await supabase.auth.getUser();
-      if (!userData) {
-        console.error("Unauthorized", userError);
-        return router.push("/auth/login");
-      }
-
-      const { data: profile, error: profileError } = await supabase
-        .from("profiles")
-        .select("email, display_name, avatar_url, user_name")
-        .eq("id", userData.id)
-        .single();
-
-      setProfile(
-        profile || {
-          email: "",
-          display_name: "",
-          avatar_url: "",
-          user_name: "",
+  const mutationProfile = useMutation({
+    mutationFn: async (newProfile: ProfileType) => {
+      const res = await fetch("/api/dashboard", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify(newProfile),
+      });
 
-      if (profileError) {
-        console.error(profileError);
-        return;
-      }
-    };
+      return await res.json();
+    },
+    onSuccess: () => {
+      // Refetch the profile when updated and saving it to cache
+      queryClient.invalidateQueries({ queryKey: ["profile"] });
+    },
+  });
 
-    fetchProfile();
-  }, [router]);
-
-  const handleSubmitForm = async (e: FormEvent) => {
+  const handleSubmitForm = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const res = await fetch("/api/dashboard", {
-      method: "POST",
-      headers: { "Content-Type": "application.json" },
-      body: JSON.stringify(profile),
-    });
-
-    const result = await res.json();
-
-    if (result.status === 201) {
-      setFormResponse(result.data);
-    }
-
-    setFormResponse(result.message);
+    mutationProfile.mutate(profile);
   };
 
   const handleChangeUsername = (e: ChangeEvent<HTMLInputElement>) => {
-    const duplicateUserName = async () => {
-      const supabase = createClient();
-      const { data } = await supabase
-        .from("profiles")
-        .select("id")
-        .eq("user_name", e.target.value)
-        .maybeSingle();
-
-      if (data) {
-        setUsernameError(
-          "The username is already taken. Please choose another one!",
-        );
-        return;
-      }
-    };
-    duplicateUserName();
-
     setProfile((prev) => ({ ...prev, user_name: e.target.value }));
-    router.refresh();
   };
 
   const handleChangeAvatar = (e: ChangeEvent<HTMLInputElement>) => {
@@ -109,7 +73,7 @@ export default function Dashboard() {
 
   return (
     <div className="container flex h-[78vh] max-h-[78vh] flex-col items-center justify-center p-10">
-      {!profile ? (
+      {isFetchingProfile || mutationProfile.isPending ? (
         <div>Loading...</div>
       ) : (
         <div className="container flex flex-col items-center">
@@ -122,7 +86,7 @@ export default function Dashboard() {
               name="avatar_url"
               id="avatar_url"
               onChange={(e) => handleChangeAvatar(e)}
-              value={profile.avatar_url || ""}
+              value={profile?.avatar_url || ""}
               type="text"
               className="pl-4"
             />
@@ -131,7 +95,7 @@ export default function Dashboard() {
               onChange={(e) => handleChangeDisplayName(e)}
               name="display_name"
               id="display_name"
-              value={profile.display_name}
+              value={profile?.display_name || ""}
               type="text"
               className="pl-4"
             />
@@ -139,7 +103,7 @@ export default function Dashboard() {
             <input
               name="email"
               id="email"
-              value={profile.email}
+              value={profile?.email}
               type="text"
               disabled
               className="pl-4"
@@ -151,20 +115,22 @@ export default function Dashboard() {
               name="user_name"
               id="user_name"
               onChange={(e) => handleChangeUsername(e)}
-              value={profile.user_name || ""}
+              value={profile?.user_name || ""}
               type="text"
               placeholder="Your new username..."
               className="pl-4"
             />
-            {!profile.user_name && <div>Please set your user name so you can share your profile!</div>}
-            <div>{usernameError || ""}</div>
+            {!profile?.user_name && (
+              <div>
+                Please set your user name so you can share your profile!
+              </div>
+            )}
             <button type="submit" className="btn mt-8">
               Update profile
             </button>
           </form>
         </div>
       )}
-      <div>{formResponse}</div>
     </div>
   );
 }

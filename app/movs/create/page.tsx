@@ -37,8 +37,6 @@ const CreateMov = () => {
   ]);
   const [activeExercise, setActiveExercise] = useState<number>(0);
   const [activeSet, setActiveSet] = useState<number>(0);
-  const router = useRouter();
-  const dialogRef = useRef<HTMLDialogElement>(null);
   const [workDuration, setWorkDuration] = useState<number>(0);
   const [restDuration, setRestDuration] = useState<number>(0);
   const [isRunning, setIsRunning] = useState<boolean>(false);
@@ -48,6 +46,9 @@ const CreateMov = () => {
   const [dayWorkouts, setDayWorkouts] = useState<Workouts | null>(null);
   const [openWorkout, setOpenWorkout] = useState<null | number>(null);
   const [openExercise, setOpenExercise] = useState<null | number>(null);
+
+  const router = useRouter();
+  const dialogRef = useRef<HTMLDialogElement>(null);
 
   // server state management
   const {
