@@ -23,7 +23,9 @@ export function LoginForm({
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `http://localhost:3000/auth/callback?next=/`,
+          redirectTo:
+            `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/auth/callback?next=/` ||
+            `http://localhost:3000/auth/callback?next=/`,
           queryParams: {
             access_type: "offline",
             prompt: "consent",
@@ -41,7 +43,7 @@ export function LoginForm({
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="card glow">
         <CardHeader>
-          <CardTitle className="text-2xl flex justify-center">
+          <CardTitle className="flex justify-center text-2xl">
             Login with:
           </CardTitle>
           <CardDescription className="flex justify-center">
