@@ -49,6 +49,7 @@ const CreateMov = () => {
   const [openWorkout, setOpenWorkout] = useState<null | number>(null);
   const [openExercise, setOpenExercise] = useState<null | number>(null);
 
+  // server state management
   const {
     // isPending,
     isFetching,

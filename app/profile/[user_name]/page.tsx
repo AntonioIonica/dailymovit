@@ -46,7 +46,6 @@ export default function Profile() {
       return result.data;
     },
   });
-  console.log(fetchedData);
 
   // Set the daily selected workouts
   useEffect(() => {

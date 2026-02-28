@@ -88,6 +88,7 @@ Topics I learned:
 - styling components for different views
 - lodash array manipulation
 - calendar tied to a chart
+- server state management
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -100,6 +101,7 @@ Topics I learned:
 - Recharts [![Recharts][Recharts-url]]
 - Vite [![Vite][vite.dev]][Vite-url]
 - React Calendar [![ReactCalendar]][ReactCalendar-url]
+- Tanstack Query [![TanstackQuery]][tanstackquery-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -237,3 +239,4 @@ Everything was written by me.
 [ui.shadcn.com]: https://img.shields.io/badge/shadcn%2Fui-000?logo=shadcnui&logoColor=fff
 [ShadCN-url]: https://ui.shadcn.com
 [ReactCalendar-url]: https://www.npmjs.com/package/react-calendar
+[tanstackquery-url]: https://tanstack.com/query/latest
