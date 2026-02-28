@@ -24,8 +24,7 @@ export function LoginForm({
         provider: "google",
         options: {
           redirectTo:
-            `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/auth/callback?next=/` ||
-            `http://localhost:3000/auth/callback?next=/`,
+            `https://dailymovit.vercel.app/auth/callback?next=/`,
           queryParams: {
             access_type: "offline",
             prompt: "consent",
