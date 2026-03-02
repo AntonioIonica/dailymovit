@@ -3,7 +3,6 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   req: NextRequest,
-  //   params, cache, etc. are now async so must await
   { params }: { params: Promise<{ user_name: string }> },
 ) {
   const { user_name } = await params;

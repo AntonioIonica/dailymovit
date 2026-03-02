@@ -18,6 +18,9 @@ export default function Dashboard() {
     avatar_url: "",
     user_name: "",
   });
+  const [usernameErrorMessage, setUsernameErrorMessage] = useState<
+    string | null
+  >();
 
   const { isFetching: isFetchingProfile, data: profileData } = useQuery({
     queryKey: ["profile"],
@@ -25,15 +28,10 @@ export default function Dashboard() {
       const res = await fetch("/api/dashboard");
       const result = await res.json();
 
-      setProfile(profileData!);
-      console.log(profileData);
+      setProfile(result.data);
       return result.data;
     },
   });
-
-  useEffect(() => {
-    setProfile(profileData!);
-  }, [profileData]);
 
   const mutationProfile = useMutation({
     mutationFn: async (newProfile: ProfileType) => {
@@ -47,9 +45,31 @@ export default function Dashboard() {
 
       return await res.json();
     },
-    onSuccess: () => {
-      // Refetch the profile when updated and saving it to cache
-      queryClient.invalidateQueries({ queryKey: ["profile"] });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ["profile"],
+        exact: true,
+      });
+    },
+  });
+
+  const mutationCheckUsername = useMutation({
+    mutationFn: async (newUsername: string | undefined) => {
+      const res = await fetch("/api/check-username", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newUsername),
+      });
+      const result = await res.json();
+
+      if (result.checkUsername.length > 0) {
+        setUsernameErrorMessage(
+          "There is already an user with this name, please try something else.",
+        );
+      }
+      return result;
     },
   });
 
@@ -57,10 +77,13 @@ export default function Dashboard() {
     e.preventDefault();
 
     mutationProfile.mutate(profile);
+    setProfile(profileData!);
   };
 
   const handleChangeUsername = (e: ChangeEvent<HTMLInputElement>) => {
     setProfile((prev) => ({ ...prev, user_name: e.target.value }));
+
+    mutationCheckUsername.mutate(profile.user_name);
   };
 
   const handleChangeAvatar = (e: ChangeEvent<HTMLInputElement>) => {
@@ -120,6 +143,9 @@ export default function Dashboard() {
               placeholder="Your new username..."
               className="pl-4"
             />
+            {usernameErrorMessage && (
+              <div className="text-red-700">{usernameErrorMessage}</div>
+            )}
             {!profile?.user_name && (
               <div>
                 Please set your user name so you can share your profile!
