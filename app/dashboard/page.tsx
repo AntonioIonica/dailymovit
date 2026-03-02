@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { clearTimeout } from "timers";
 
 type ProfileType = {
   email: string;
@@ -9,6 +11,19 @@ type ProfileType = {
   avatar_url: string | undefined;
   user_name: string | undefined;
 };
+
+function debounce<T extends (...args: any[]) => void>(func: T, delay = 1200) {
+  let timer: NodeJS.Timeout;
+
+  return function (this: any, ...args: Parameters<T>) {
+    // This will clear the timer at every key press until the final one which will not clear and let the time pass
+    clearTimeout(timer);
+
+    timer = setTimeout(() => {
+      func.apply(this, args);
+    }, delay);
+  };
+}
 
 export default function Dashboard() {
   const queryClient = useQueryClient();
@@ -83,7 +98,7 @@ export default function Dashboard() {
   const handleChangeUsername = (e: ChangeEvent<HTMLInputElement>) => {
     setProfile((prev) => ({ ...prev, user_name: e.target.value }));
 
-    mutationCheckUsername.mutate(profile.user_name);
+    debounce(() => mutationCheckUsername.mutate(profile.user_name));
   };
 
   const handleChangeAvatar = (e: ChangeEvent<HTMLInputElement>) => {
