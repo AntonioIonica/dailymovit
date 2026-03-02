@@ -21,9 +21,12 @@ export async function GET(req: NextRequest) {
     .single();
 
   if (profileError) {
-    return NextResponse.json({
-      error: `There was an error requesting the user profile: ${profileError}`,
-    });
+    return NextResponse.json(
+      {
+        error: `There was an error requesting the user profile: ${profileError}`,
+      },
+      { status: 404 },
+    );
   }
 
   return NextResponse.json(

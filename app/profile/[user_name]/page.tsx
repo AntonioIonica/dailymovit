@@ -29,12 +29,7 @@ export default function Profile() {
   const [openWorkout, setOpenWorkout] = useState<number | null>(null);
   const [openExercise, setOpenExercise] = useState<number | null>(null);
 
-  const {
-    // isPending,
-    isFetching,
-    data: fetchedData,
-    // error,
-  } = useQuery({
+  const { isFetching, data: fetchedData } = useQuery({
     queryKey: ["workoutsAndProfile"],
     queryFn: async (): Promise<{
       workoutData: Workouts;
@@ -43,7 +38,7 @@ export default function Profile() {
       const res = await fetch(`/api/public-profile/${params.user_name}`);
       const result = await res.json();
 
-      return result.data;
+      return result.data || [];
     },
   });
 
@@ -126,179 +121,189 @@ export default function Profile() {
   );
 
   return (
-    <div className="flex h-full max-h-screen w-screen">
-      <div className="flex h-full max-h-[85vh] w-full flex-col space-y-3 px-10">
-        {/* Profile */}
-        <div className="card glow flex h-[250px] w-full">
-          {!isFetching ? (
-            <div className="flex h-full w-full flex-col p-2">
-              <div className="flex space-x-4">
-                <div className="mr-10">
-                  {fetchedData?.userData?.avatar_url || ""}
+    <div className="flex h-[600px] max-h-screen w-screen">
+      {fetchedData?.userData ? (
+        <div className="flex h-full max-h-[85vh] w-full flex-col space-y-3 px-10">
+          {/* Profile */}
+          <div className="card glow flex h-[250px] w-full">
+            {!isFetching ? (
+              <div className="flex h-full w-full flex-col p-2">
+                <div className="flex space-x-4">
+                  <div className="mr-10">
+                    {fetchedData?.userData?.avatar_url || ""}
+                  </div>
+                  <div className="flex space-x-2">
+                    <span>Name:</span>
+                    <span className="text-gray-200">
+                      {fetchedData?.userData?.display_name}
+                    </span>
+                  </div>
                 </div>
-                <div className="flex space-x-2">
-                  <span>Name:</span>
-                  <span className="text-gray-200">
-                    {fetchedData?.userData?.display_name}
-                  </span>
+
+                <div className="flex flex-col space-y-0 text-sm">
+                  <div className="ml-4 font-bold">Public workouts</div>
+                  <div>
+                    Total reps:{" "}
+                    {fetchedData?.workoutData
+                      ?.flatMap((workout) => workout.exercises)
+                      .flatMap((exercise) => exercise.sets)
+                      .reduce((sum, set) => sum + set.reps, 0)}
+                  </div>
+                  <div>
+                    Longest workout:{" "}
+                    {Math.max(
+                      ...(fetchedData?.workoutData?.map(
+                        (workout) => workout.duration,
+                      ) || []),
+                    ) ?? 0}
+                  </div>
+                  <div>
+                    Highest rep count: {maxRepsExercise}-{maxRep}
+                  </div>
+                  <div>
+                    Highest weight lifted: {maxWeightExercise}-{maxWeight} kg
+                  </div>
                 </div>
               </div>
-
-              <div className="flex flex-col space-y-0 text-sm">
-                <div className="ml-4 font-bold">Public workouts</div>
-                <div>
-                  Total reps:{" "}
-                  {fetchedData?.workoutData
-                    ?.flatMap((workout) => workout.exercises)
-                    .flatMap((exercise) => exercise.sets)
-                    .reduce((sum, set) => sum + set.reps, 0)}
-                </div>
-                <div>
-                  Longest workout:{" "}
-                  {Math.max(
-                    ...(fetchedData?.workoutData?.map(
-                      (workout) => workout.duration,
-                    ) || []),
-                  ) ?? 0}
-                </div>
-                <div>
-                  Highest rep count: {maxRepsExercise}-{maxRep}
-                </div>
-                <div>
-                  Highest weight lifted: {maxWeightExercise}-{maxWeight} kg
-                </div>
+            ) : (
+              <div className="flex h-full w-full items-center justify-start">
+                Loading...
               </div>
-            </div>
-          ) : (
-            <div className="flex h-full w-full items-center justify-start">
-              Loading...
-            </div>
-          )}
+            )}
 
-          <div className="flex w-[750px] items-center justify-center space-x-4">
-            <span>Share my profile: {"  "}</span>
-            <button
-              className="rounded-md border-2 border-solid border-border p-1"
-              onClick={() => {
-                navigator.clipboard.writeText(
-                  `${process.env.NEXT_PUBLIC_VERCEL_URL}/profile/${params.user_name}`,
-                );
-                alert(
-                  `Copied: ${`${process.env.NEXT_PUBLIC_VERCEL_URL}/profile/${params.user_name}`}`,
-                );
-              }}
-            >
-              {`${process.env.NEXT_PUBLIC_VERCEL_URL}/profile/${params.user_name}`}
-            </button>
-          </div>
-        </div>
-
-        {/* Workouts */}
-        <div className="flex h-[750px] w-full space-x-3">
-          <div className="card glow h-full w-[40%]">
-            <CalendarContainer
-              dateValue={dateValue}
-              setDateValue={setDateValue}
-              workoutsData={fetchedData?.workoutData || []}
-              calSize="largeCal"
-            />
+            <div className="flex w-[750px] items-center justify-center space-x-4">
+              <span>Share my profile: {"  "}</span>
+              <button
+                className="rounded-md border-2 border-solid border-border p-1"
+                onClick={() => {
+                  navigator.clipboard.writeText(
+                    `${process.env.NEXT_PUBLIC_VERCEL_URL}/profile/${params.user_name}`,
+                  );
+                  alert(
+                    `Copied: ${`${process.env.NEXT_PUBLIC_VERCEL_URL}/profile/${params.user_name}`}`,
+                  );
+                }}
+              >
+                {`${process.env.NEXT_PUBLIC_VERCEL_URL}/profile/${params.user_name}`}
+              </button>
+            </div>
           </div>
 
-          {/* Workouts list */}
-          <div className="card glow h-[100%] w-[60%]">
-            <div className="h-[100%] max-h-[64vh] w-[100%] overflow-y-auto">
-              <div className="container flex w-[100%] flex-col items-start space-y-0">
-                {!workoutsLoading ? (
-                  dayWorkouts?.map((workout, index) => (
-                    <div
-                      key={index}
-                      className="flex w-full flex-col rounded-sm px-4"
-                    >
-                      <button
-                        className="text-md w-full text-start font-bold"
-                        onClick={() => {
-                          toggleWorkouts(index, setOpenWorkout, openWorkout);
-                        }}
+          {/* Workouts */}
+          <div className="flex h-[750px] w-full space-x-3">
+            <div className="card glow h-full w-[40%]">
+              <CalendarContainer
+                dateValue={dateValue}
+                setDateValue={setDateValue}
+                workoutsData={fetchedData?.workoutData || []}
+                calSize="largeCal"
+              />
+            </div>
+
+            {/* Workouts list */}
+            <div className="card glow h-[100%] w-[60%]">
+              <div className="h-[100%] max-h-[64vh] w-[100%] overflow-y-auto">
+                <div className="container flex w-[100%] flex-col items-start space-y-0">
+                  {!workoutsLoading ? (
+                    dayWorkouts?.map((workout, index) => (
+                      <div
+                        key={index}
+                        className="flex w-full flex-col rounded-sm px-4"
                       >
-                        - {workout?.name}
-                      </button>
+                        <button
+                          className="text-md w-full text-start font-bold"
+                          onClick={() => {
+                            toggleWorkouts(index, setOpenWorkout, openWorkout);
+                          }}
+                        >
+                          - {workout?.name}
+                        </button>
 
-                      {/* Details of workouts */}
-                      {openWorkout === index && (
-                        <div className="w-full flex-col overflow-hidden">
-                          {/* Workout details */}
-                          <div className="flex w-full space-x-6">
-                            <span>Duration: {workout?.duration} sec</span>
-                            <span className="italic">
-                              Completed at:{" "}
-                              {parseLocalTime(workout!.completed_at.toString())}
-                            </span>
-                          </div>
+                        {/* Details of workouts */}
+                        {openWorkout === index && (
+                          <div className="w-full flex-col overflow-hidden">
+                            {/* Workout details */}
+                            <div className="flex w-full space-x-6">
+                              <span>Duration: {workout?.duration} sec</span>
+                              <span className="italic">
+                                Completed at:{" "}
+                                {parseLocalTime(
+                                  workout!.completed_at.toString(),
+                                )}
+                              </span>
+                            </div>
 
-                          {/* Exercise details */}
-                          <div className="flex w-full flex-col">
-                            <div className="flex flex-col">
-                              {workout?.exercises.map((exercise, index) => (
-                                <div
-                                  key={index}
-                                  className={`flex w-full flex-col px-2 py-1 ${index === openExercise ? "rounded-sm border-2 border-solid border-[#a1cb9f]" : ""}`}
-                                >
-                                  <div className="ml-4 flex space-x-4">
-                                    <button
-                                      className="underline"
-                                      onClick={() =>
-                                        toggleExercises(
-                                          index,
-                                          setOpenExercise,
-                                          openExercise,
-                                          openWorkout,
-                                        )
-                                      }
-                                    >
-                                      {exercise.name}
-                                    </button>
-                                    {exercise.notes && (
-                                      <span>Notes: {exercise.notes}</span>
+                            {/* Exercise details */}
+                            <div className="flex w-full flex-col">
+                              <div className="flex flex-col">
+                                {workout?.exercises.map((exercise, index) => (
+                                  <div
+                                    key={index}
+                                    className={`flex w-full flex-col px-2 py-1 ${index === openExercise ? "rounded-sm border-2 border-solid border-[#a1cb9f]" : ""}`}
+                                  >
+                                    <div className="ml-4 flex space-x-4">
+                                      <button
+                                        className="underline"
+                                        onClick={() =>
+                                          toggleExercises(
+                                            index,
+                                            setOpenExercise,
+                                            openExercise,
+                                            openWorkout,
+                                          )
+                                        }
+                                      >
+                                        {exercise.name}
+                                      </button>
+                                      {exercise.notes && (
+                                        <span>Notes: {exercise.notes}</span>
+                                      )}
+                                    </div>
+
+                                    {openExercise === index && (
+                                      <div className="ml-8 flex flex-col text-sm">
+                                        {exercise?.sets.map((set, index) => (
+                                          <ul
+                                            key={index}
+                                            className="flex w-full items-center justify-between px-3"
+                                          >
+                                            <li>
+                                              Set: {set.set_number || "-"}
+                                            </li>
+                                            <li>Reps: {set.reps || "-"}</li>
+                                            <li>
+                                              Duration: {set.duration || "-"}
+                                            </li>
+                                            <li>
+                                              Rest time: {set.rest_time || "-"}
+                                            </li>
+                                            <li>Weight: {set.weight || "-"}</li>
+                                            <li>RPE: {set.rpe || "-"}</li>
+                                          </ul>
+                                        ))}
+                                      </div>
                                     )}
                                   </div>
-
-                                  {openExercise === index && (
-                                    <div className="ml-8 flex flex-col text-sm">
-                                      {exercise?.sets.map((set, index) => (
-                                        <ul
-                                          key={index}
-                                          className="flex w-full items-center justify-between px-3"
-                                        >
-                                          <li>Set: {set.set_number || "-"}</li>
-                                          <li>Reps: {set.reps || "-"}</li>
-                                          <li>
-                                            Duration: {set.duration || "-"}
-                                          </li>
-                                          <li>
-                                            Rest time: {set.rest_time || "-"}
-                                          </li>
-                                          <li>Weight: {set.weight || "-"}</li>
-                                          <li>RPE: {set.rpe || "-"}</li>
-                                        </ul>
-                                      ))}
-                                    </div>
-                                  )}
-                                </div>
-                              ))}
+                                ))}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      )}
-                    </div>
-                  ))
-                ) : (
-                  <div>Loading...</div>
-                )}
+                        )}
+                      </div>
+                    ))
+                  ) : (
+                    <div>Loading...</div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      ) : (
+        <div className="flex h-full w-full items-center justify-center text-4xl">
+          There is no user with this user name!
+        </div>
+      )}
     </div>
   );
 }
