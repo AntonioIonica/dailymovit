@@ -44,7 +44,7 @@ export function LoginForm({
       <Card className="card glow">
         <CardHeader>
           <CardTitle className="flex justify-center text-2xl">
-            Login with:
+            <h2>Login with:</h2>
           </CardTitle>
           <CardDescription className="flex justify-center">
             (Soon to add more providers)

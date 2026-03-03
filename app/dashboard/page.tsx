@@ -12,6 +12,7 @@ type ProfileType = {
   user_name: string | undefined;
 };
 
+// Debouncer for username check to register only after writing the whole name
 function debounce<T extends (...args: any[]) => void>(func: T, delay = 1200) {
   let timer: NodeJS.Timeout;
 
