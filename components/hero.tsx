@@ -1,8 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import DemoCarousel from "./DemoCarousel";
+import { createClient } from "@/lib/supabase/server";
 
-export default function Hero() {
+export default async function Hero() {
+  const supabase = createClient();
+
+  const {
+    data: { user },
+  } = await (await supabase).auth.getUser();
+
   return (
     <>
       {/* Hero */}
@@ -21,7 +28,8 @@ export default function Hero() {
 
         <div className="mt-8 flex justify-center gap-4">
           <Link
-            href="/auth/login"
+            // href="/auth/login"
+            href={`${user ? "/movs/create" : "/auth/login"}`}
             className="rounded-xl bg-white px-6 py-3 font-semibold text-black hover:bg-gray-200"
           >
             Start tracking for free
@@ -82,12 +90,21 @@ export default function Hero() {
         </div>
 
         <div className="mt-12 flex justify-center">
-          <Link
-            href="/auth/login"
-            className="rounded-xl bg-white px-6 py-3 font-semibold text-black hover:bg-gray-200"
-          >
-            Join now
-          </Link>
+          {!user ? (
+            <Link
+              href="/auth/login"
+              className="rounded-xl bg-white px-6 py-3 font-semibold text-black hover:bg-gray-200"
+            >
+              Join now
+            </Link>
+          ) : (
+            <Link
+              href="/movs/create"
+              className="rounded-xl bg-white px-6 py-3 font-semibold text-black hover:bg-gray-200"
+            >
+              Are you ready?
+            </Link>
+          )}
         </div>
       </section>
 
@@ -108,18 +125,27 @@ export default function Hero() {
           </p>
 
           <div className="flex justify-center">
-            <Link
-              href="/auth/login"
-              className="mt-8 flex w-[12rem] items-center justify-center rounded-xl bg-white px-8 py-3 font-semibold text-black hover:bg-gray-200"
-            >
-              <Image
-                src="/google_logo.svg"
-                alt="google login logo"
-                height={30}
-                width={30}
-              />{" "}
-              Create your account
-            </Link>
+            {!user ? (
+              <Link
+                href="/auth/login"
+                className="mt-8 flex w-[12rem] items-center justify-center rounded-xl bg-white px-8 py-3 font-semibold text-black hover:bg-gray-200"
+              >
+                <Image
+                  src="/google_logo.svg"
+                  alt="google login logo"
+                  height={30}
+                  width={30}
+                />{" "}
+                Create your account
+              </Link>
+            ) : (
+              <Link
+                href="/movs/create"
+                className="mt-8 flex w-content items-center justify-center rounded-xl bg-white px-8 py-3 font-semibold text-black hover:bg-gray-200"
+              >
+                Start your workout
+              </Link>
+            )}
           </div>
         </div>
       </section>
