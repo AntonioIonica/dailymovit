@@ -473,9 +473,12 @@ const CreateMov = () => {
             />
 
             {/* Exercise duration */}
-            <div className="mt-4 flex max-w-[100%] items-center justify-between space-x-16">
+            <div className="mt-4 flex w-[300px] max-w-[100%] items-center justify-between space-x-16">
               <div className="flex max-w-full flex-col space-y-2">
-                <span>Work time: {workDuration} s</span>
+                <span>
+                  Work time: <span className="tabular-nums font-mono">{workDuration}</span>{" "}
+                  s
+                </span>
                 <button
                   className="btn bg-secondary px-1 py-0.5 font-semibold"
                   disabled={isRunning}
@@ -486,7 +489,10 @@ const CreateMov = () => {
               </div>
 
               <div className="flex max-w-full flex-col space-y-2">
-                <span>Rest time: {restDuration} s</span>
+                <span>
+                  Rest time: <span className="tabular-nums font-mono">{restDuration}</span>{" "}
+                  s
+                </span>
                 <button
                   className="btn px-1 py-0.5 font-semibold"
                   disabled={isBreak}
@@ -620,7 +626,7 @@ const CreateMov = () => {
         </div>
 
         {/* Calendar and details container */}
-        <div className="card glow h-full w-[7rem] flex-auto flex-col items-center space-y-2 p-2">
+        <div className="card glow h-full w-[7rem] flex-auto flex-col items-center space-y-2 p-1">
           {/* Calendar  */}
           <div className="h-[32%] w-full">
             {!isFetching ? (
@@ -644,7 +650,7 @@ const CreateMov = () => {
                 {!workoutsLoading ? (
                   dayWorkouts?.map((workout, index) => (
                     <div
-                      className="flex w-full flex-col rounded-sm border-2 border-solid border-primary px-4"
+                      className="flex w-full flex-col rounded-sm px-2"
                       key={index}
                     >
                       <button
@@ -656,12 +662,12 @@ const CreateMov = () => {
                         {workout?.name}
                       </button>
 
-                      {/* Details of eah workout */}
+                      {/* Details of each workout */}
                       {openWorkout === index && (
-                        <div className="panel w-full flex-col overflow-hidden">
+                        <div className="w-full flex-col overflow-hidden">
                           {/* Workout details */}
-                          <div className="flex w-full space-x-6">
-                            <span>Duration: {workout?.duration} sec</span>
+                          <div className="flex w-full space-x-6 text-sm">
+                            <span>Duration: {workout?.duration}</span>
                             <span className="italic">
                               Completed at:{" "}
                               {parseLocalTime(workout!.completed_at.toString())}
