@@ -10,6 +10,7 @@ import { CartesianGrid, Legend, Line, LineChart, XAxis, YAxis } from "recharts";
 import { RechartsDevtools } from "@recharts/devtools";
 import _ from "lodash";
 import { useQuery } from "@tanstack/react-query";
+import { parseTimerToMinutes } from "@/lib/utils";
 
 type Workout = {
   id: string;
@@ -79,7 +80,7 @@ const MovsList = () => {
   const [workoutsLoading, setWorkoutsLoading] = useState(false);
   const [userId, setUserId] = useState<string | null>();
   const [exerciseChart, setExerciseChart] = useState<any>(null);
-  
+
   const {
     // isPending,
     isFetching,
@@ -244,8 +245,10 @@ const MovsList = () => {
               </div>
               <div>
                 Longest workout:{" "}
-                {Math.max(
-                  ...(workoutsData?.map((workout) => workout.duration) || []),
+                {parseTimerToMinutes(
+                  Math.max(
+                    ...(workoutsData?.map((workout) => workout.duration) || []),
+                  ),
                 ) ?? 0}
               </div>
               <div>
@@ -306,7 +309,7 @@ const MovsList = () => {
                       }
                       className="text-md w-full text-start font-bold"
                     >
-                      - {workout?.name}
+                      {workout?.name}
                     </button>
 
                     {/* Details of each workout */}
@@ -314,7 +317,9 @@ const MovsList = () => {
                       <div className="w-full flex-col overflow-hidden">
                         {/* Workout details */}
                         <div className="flex w-full space-x-6">
-                          <span>Duration: {workout?.duration} sec</span>
+                          <span>
+                            Duration: {parseTimerToMinutes(workout?.duration)}
+                          </span>
                           <span className="italic">
                             Completed at:{" "}
                             {parseLocalTime(workout!.completed_at.toString())}
@@ -356,9 +361,17 @@ const MovsList = () => {
                                       >
                                         <li>Set: {set.set_number || "-"}</li>
                                         <li>Reps: {set.reps || "-"}</li>
-                                        <li>Duration: {set.duration || "-"}</li>
                                         <li>
-                                          Rest time: {set.rest_time || "-"}
+                                          Duration:{" "}
+                                          {set.duration
+                                            ? parseTimerToMinutes(set.duration)
+                                            : "-"}
+                                        </li>
+                                        <li>
+                                          Rest time:{" "}
+                                          {set.rest_time
+                                            ? parseTimerToMinutes(set.rest_time)
+                                            : "-"}
                                         </li>
                                         <li>Weight: {set.weight || "-"}</li>
                                         <li>RPE: {set.rpe || "-"}</li>

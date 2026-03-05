@@ -8,6 +8,7 @@ import {
   Workouts,
 } from "@/app/movs/[id]/page";
 import CalendarContainer from "@/components/CalendarContainer";
+import { parseTimerToMinutes } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import moment from "moment-timezone";
 import { useParams } from "next/navigation";
@@ -124,7 +125,7 @@ export default function Profile() {
     <div className="flex h-[600px] max-h-screen w-screen">
       {fetchedData?.userData ? (
         <div className="flex h-full max-h-[85vh] w-full flex-col space-y-3 px-10">
-          {/* Profile */}
+          {/*User Profile */}
           <div className="card glow flex h-[250px] w-full">
             {!isFetching ? (
               <div className="flex h-full w-full flex-col p-2">
@@ -134,9 +135,9 @@ export default function Profile() {
                   </div>
                   <div className="flex space-x-2">
                     <span>Name:</span>
-                    <span className="text-gray-200">
+                    <i className="text-gray-200 underline">
                       {fetchedData?.userData?.display_name}
-                    </span>
+                    </i>
                   </div>
                 </div>
 
@@ -151,17 +152,19 @@ export default function Profile() {
                   </div>
                   <div>
                     Longest workout:{" "}
-                    {Math.max(
-                      ...(fetchedData?.workoutData?.map(
-                        (workout) => workout.duration,
-                      ) || []),
+                    {parseTimerToMinutes(
+                      Math.max(
+                        ...(fetchedData?.workoutData?.map(
+                          (workout) => workout.duration,
+                        ) || []),
+                      ),
                     ) ?? 0}
                   </div>
                   <div>
-                    Highest rep count: {maxRepsExercise}-{maxRep}
+                    Max rep count: {maxRepsExercise} - {maxRep} reps
                   </div>
                   <div>
-                    Highest weight lifted: {maxWeightExercise}-{maxWeight} kg
+                    Max weight lifted: {maxWeightExercise} - {maxWeight} kg
                   </div>
                 </div>
               </div>
@@ -174,7 +177,7 @@ export default function Profile() {
             <div className="flex w-[750px] items-center justify-center space-x-4">
               <span>Share my profile: {"  "}</span>
               <button
-                className="rounded-md border-2 border-solid border-border p-1"
+                className="rounded-md border-2 border-solid border-border px-2 py-1"
                 onClick={() => {
                   navigator.clipboard.writeText(
                     `${process.env.NEXT_PUBLIC_VERCEL_URL}/profile/${params.user_name}`,
@@ -216,7 +219,7 @@ export default function Profile() {
                             toggleWorkouts(index, setOpenWorkout, openWorkout);
                           }}
                         >
-                          - {workout?.name}
+                          {workout?.name}
                         </button>
 
                         {/* Details of workouts */}
@@ -224,7 +227,10 @@ export default function Profile() {
                           <div className="w-full flex-col overflow-hidden">
                             {/* Workout details */}
                             <div className="flex w-full space-x-6">
-                              <span>Duration: {workout?.duration} sec</span>
+                              <span>
+                                Duration:{" "}
+                                {parseTimerToMinutes(workout?.duration)}
+                              </span>
                               <span className="italic">
                                 Completed at:{" "}
                                 {parseLocalTime(
@@ -272,10 +278,20 @@ export default function Profile() {
                                             </li>
                                             <li>Reps: {set.reps || "-"}</li>
                                             <li>
-                                              Duration: {set.duration || "-"}
+                                              Duration:{" "}
+                                              {set.duration
+                                                ? parseTimerToMinutes(
+                                                    set.duration,
+                                                  )
+                                                : "-"}
                                             </li>
                                             <li>
-                                              Rest time: {set.rest_time || "-"}
+                                              Rest time:{" "}
+                                              {set.rest_time
+                                                ? parseTimerToMinutes(
+                                                    set.rest_time,
+                                                  )
+                                                : "-"}
                                             </li>
                                             <li>Weight: {set.weight || "-"}</li>
                                             <li>RPE: {set.rpe || "-"}</li>

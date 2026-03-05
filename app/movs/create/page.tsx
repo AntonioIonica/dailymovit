@@ -12,6 +12,7 @@ import { DateValue } from "../[id]/page";
 import CalendarContainer from "@/components/CalendarContainer";
 import moment from "moment-timezone";
 import { useQuery } from "@tanstack/react-query";
+import { parseTimerToMinutes } from "@/lib/utils";
 
 const CreateMov = () => {
   const [workout, setWorkout] = useState({
@@ -369,22 +370,24 @@ const CreateMov = () => {
     <div className="flex h-[600px] max-h-screen w-screen px-10">
       <div className="mx-0 flex w-full px-0">
         {/* Side form */}
-        <div className="card glow h-full w-[358px] flex-none items-center overflow-x-hidden overflow-y-hidden">
+        <div className="card glow h-full w-[385px] flex-none items-center overflow-y-auto overflow-x-hidden">
           <form onSubmit={handleFinishWorkout} className="w-full space-y-1">
-            <label htmlFor="workoutName">
-              Workout name: <span className="text-sm">*editable</span>
+            <label htmlFor="workoutName" className="flex justify-center">
+              Workout name:
             </label>
-            <input
-              id="workoutName"
-              name="workoutName"
-              type="text"
-              value={workout.name}
-              maxLength={25}
-              placeholder="New workout..."
-              onChange={(e) => handleWorkoutName(e)}
-              className="w-full rounded-sm pl-6 focus:scale-[101%] focus:rounded-sm focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
-            />
-            <div className="flex items-center">
+            <div className="flex w-full justify-center">
+              <input
+                id="workoutName"
+                name="workoutName"
+                type="text"
+                value={workout.name}
+                maxLength={25}
+                placeholder="New workout..."
+                onChange={(e) => handleWorkoutName(e)}
+                className="rounded-sm pl-3 focus:scale-[102%] focus:rounded-sm focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
+              />
+            </div>
+            <div className="flex items-center justify-center">
               <label htmlFor="publicCheckbox">Public workout: </label>
               <input
                 id="publicCheckbox"
@@ -425,8 +428,15 @@ const CreateMov = () => {
                         <div className="flex items-center justify-between space-x-2 text-sm">
                           <div className="mr-2">{set.set_number}.</div>
                           <div>Reps: {set.reps}</div>
-                          <div>Time: {set.duration}&apos;</div>
-                          <div>Weight: {set.weight}</div>
+                          <div>
+                            Time:{" "}
+                            {set.duration == 0
+                              ? "-"
+                              : parseTimerToMinutes(set.duration)}
+                          </div>
+                          <div>
+                            Weight: {set.weight == 0 ? "-" : set.weight}
+                          </div>
                         </div>
                         <button
                           type="button"
@@ -451,9 +461,9 @@ const CreateMov = () => {
             <div className="flex justify-center">
               <button
                 type="submit"
-                className="mt-4 rounded-md bg-primary px-3 py-2 font-semibold uppercase text-gray-900 hover:scale-105 hover:bg-secondary"
+                className="mt-4 rounded-md bg-primary px-3 py-2 text-2xl font-bold uppercase text-gray-900 underline hover:scale-105 hover:bg-secondary"
               >
-                Send the mov
+                Save workout
               </button>
             </div>
           </form>
@@ -475,10 +485,12 @@ const CreateMov = () => {
             {/* Exercise duration */}
             <div className="mt-4 flex w-[300px] max-w-[100%] items-center justify-between space-x-16">
               <div className="flex max-w-full flex-col space-y-2">
-                <span>
-                  Work time: <span className="tabular-nums font-mono">{workDuration}</span>{" "}
-                  s
-                </span>
+                <div className="flex flex-col">
+                  <span>Work time:</span>
+                  <span className="flex justify-center border-b-2 border-slate-100 font-mono tabular-nums">
+                    {parseTimerToMinutes(workDuration)}
+                  </span>
+                </div>
                 <button
                   className="btn bg-secondary px-1 py-0.5 font-semibold"
                   disabled={isRunning}
@@ -489,10 +501,12 @@ const CreateMov = () => {
               </div>
 
               <div className="flex max-w-full flex-col space-y-2">
-                <span>
-                  Rest time: <span className="tabular-nums font-mono">{restDuration}</span>{" "}
-                  s
-                </span>
+                <div className="flex flex-col">
+                  <span>Rest time:</span>
+                  <span className="flex justify-center border-b-2 border-slate-100 font-mono tabular-nums">
+                    {parseTimerToMinutes(restDuration)}
+                  </span>
+                </div>
                 <button
                   className="btn px-1 py-0.5 font-semibold"
                   disabled={isBreak}
@@ -504,7 +518,7 @@ const CreateMov = () => {
             </div>
 
             {/* Central reps */}
-            <div className="my-3 flex items-center justify-center">
+            <div className="my-1 flex items-center justify-center">
               <button
                 className="flex items-center justify-center px-4 py-4 text-5xl"
                 onClick={decrementRep}
@@ -626,7 +640,7 @@ const CreateMov = () => {
         </div>
 
         {/* Calendar and details container */}
-        <div className="card glow h-full w-[7rem] flex-auto flex-col items-center space-y-2 p-1">
+        <div className="card glow h-full w-[9rem] flex-auto flex-col items-center space-y-2 p-1">
           {/* Calendar  */}
           <div className="h-[32%] w-full">
             {!isFetching ? (
@@ -644,7 +658,7 @@ const CreateMov = () => {
           </div>
 
           {/* Workout details */}
-          <div className="h-[67%] max-h-[67%] w-full">
+          <div className="h-[67%] max-h-[67%] w-full overflow-y-auto">
             <div className="h-full max-h-full w-[100%] overflow-y-auto">
               <div className="container flex w-full flex-col items-start space-y-0">
                 {!workoutsLoading ? (
@@ -667,7 +681,9 @@ const CreateMov = () => {
                         <div className="w-full flex-col overflow-hidden">
                           {/* Workout details */}
                           <div className="flex w-full space-x-6 text-sm">
-                            <span>Duration: {workout?.duration}</span>
+                            <span>
+                              Duration: {parseTimerToMinutes(workout?.duration)}
+                            </span>
                             <span className="italic">
                               Completed at:{" "}
                               {parseLocalTime(workout!.completed_at.toString())}
@@ -705,18 +721,44 @@ const CreateMov = () => {
                                       {exercises.sets.map((set, index) => (
                                         <ul
                                           key={index}
-                                          className="flex items-center justify-between"
+                                          className="flex items-center justify-between space-x-2 text-sm"
                                         >
-                                          <li>Set: {set.set_number || "-"}</li>
-                                          <li>Reps: {set.reps || "-"}</li>
-                                          <li>
-                                            Duration: {set.duration || "-"}
+                                          <li className="flex flex-col items-center">
+                                            <span>Set:</span>
+                                            <span>{set.set_number || "-"}</span>
                                           </li>
-                                          <li>
-                                            Rest time: {set.rest_time || "-"}
+                                          <li className="flex flex-col items-center">
+                                            <span>Reps:</span>
+                                            <span>{set.reps || "-"}</span>
                                           </li>
-                                          <li>Weight: {set.weight || "-"}</li>
-                                          <li>RPE: {set.rpe || "-"}</li>
+                                          <li className="flex flex-col items-center">
+                                            <span>Duration:</span>
+                                            <span>
+                                              {set.duration
+                                                ? parseTimerToMinutes(
+                                                    set.duration,
+                                                  )
+                                                : "-"}
+                                            </span>
+                                          </li>
+                                          <li className="flex flex-col items-center">
+                                            <span>Rest time:</span>
+                                            <span>
+                                              {set.rest_time
+                                                ? parseTimerToMinutes(
+                                                    set.rest_time,
+                                                  )
+                                                : "-"}
+                                            </span>
+                                          </li>
+                                          <li className="flex flex-col items-center">
+                                            <span>Weight:</span>
+                                            <span>{set.weight || "-"}</span>
+                                          </li>
+                                          <li className="flex flex-col items-center">
+                                            <span>RPE:</span>
+                                            <span>{set.rpe || "-"}</span>
+                                          </li>
                                         </ul>
                                       ))}
                                     </div>
