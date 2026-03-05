@@ -212,12 +212,19 @@ const CreateMov = () => {
       ].set_number || 0;
 
     exercisesField[exerciseIndex].sets.push({
-      reps: 1,
+      reps: exercisesField[exerciseIndex].sets[
+        exercisesField[exerciseIndex].sets.length - 1
+      ].reps,
       duration: 0,
       rest_time: 0,
       set_number: lastSetNumber + 1,
-      weight: 0,
-      rpe: 1,
+      weight:
+        exercisesField[exerciseIndex].sets[
+          exercisesField[exerciseIndex].sets.length - 1
+        ].weight,
+      rpe: exercisesField[exerciseIndex].sets[
+        exercisesField[exerciseIndex].sets.length - 1
+      ].rpe,
     });
 
     setExercises(exercisesField);
