@@ -548,7 +548,7 @@ const CreateMov = () => {
               value={exercises[activeExercise].sets[activeSet].reps}
               onChange={(e) => handleSetRep(activeExercise, activeSet, e)}
               min={1}
-              max={30}
+              max={50}
               className="scale-[230%] accent-primary"
             />
 
