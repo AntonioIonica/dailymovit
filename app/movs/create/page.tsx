@@ -16,13 +16,13 @@ import { parseTimerToMinutes } from "@/lib/utils";
 
 const CreateMov = () => {
   const [workout, setWorkout] = useState({
-    name: "New Workout",
+    name: "",
     duration: 0,
     public: true,
   });
   const [exercises, setExercises] = useState([
     {
-      exerciseName: "New exercise",
+      exerciseName: "",
       notes: "",
       sets: [
         {
@@ -159,7 +159,7 @@ const CreateMov = () => {
     exercisesField[activeExercise].sets[activeSet].duration = workDuration;
     exercisesField[activeExercise].sets[activeSet].rest_time = restDuration;
     exercisesField.push({
-      exerciseName: "New exercise",
+      exerciseName: "",
       notes: "",
       sets: [
         {
@@ -342,13 +342,13 @@ const CreateMov = () => {
     });
 
     setWorkout({
-      name: "New Workout",
+      name: "",
       duration: 0,
       public: true,
     });
     setExercises([
       {
-        exerciseName: "New exercise",
+        exerciseName: "",
         notes: "",
         sets: [
           {
