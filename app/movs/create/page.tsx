@@ -14,28 +14,34 @@ import moment from "moment-timezone";
 import { useQuery } from "@tanstack/react-query";
 import { parseTimerToMinutes } from "@/lib/utils";
 
+const MAX_REPS = 100;
+
 const CreateMov = () => {
-  const [workout, setWorkout] = useState({
-    name: "",
-    duration: 0,
-    public: true,
-  });
-  const [exercises, setExercises] = useState([
-    {
-      exerciseName: "",
-      notes: "",
-      sets: [
-        {
-          reps: 1,
-          duration: 0,
-          rest_time: 0,
-          set_number: 1,
-          weight: 0,
-          rpe: 1,
-        },
-      ],
+  const [workout, setWorkout] = useState(
+    JSON.parse(localStorage.getItem("currentWorkout")!)?.workout ?? {
+      name: "",
+      duration: 0,
+      public: true,
     },
-  ]);
+  );
+  const [exercises, setExercises] = useState(
+    JSON.parse(localStorage.getItem("currentWorkout")!)?.exercises ?? [
+      {
+        exerciseName: "",
+        notes: "",
+        sets: [
+          {
+            reps: 1,
+            duration: 0,
+            rest_time: 0,
+            set_number: 1,
+            weight: 0,
+            rpe: 1,
+          },
+        ],
+      },
+    ],
+  );
   const [activeExercise, setActiveExercise] = useState<number>(0);
   const [activeSet, setActiveSet] = useState<number>(0);
   const [workDuration, setWorkDuration] = useState<number>(0);
@@ -50,6 +56,13 @@ const CreateMov = () => {
 
   const router = useRouter();
   const dialogRef = useRef<HTMLDialogElement>(null);
+
+  useEffect(() => {
+    localStorage.setItem(
+      "currentWorkout",
+      JSON.stringify({ workout, exercises }),
+    );
+  }, [workout, exercises]);
 
   // server state management
   const {
@@ -366,6 +379,7 @@ const CreateMov = () => {
     setActiveExercise(0);
     setActiveSet(0);
     initialTimer();
+    localStorage.removeItem("currentWorkout");
 
     const result = await res.json();
     if (result.userId) {
@@ -548,7 +562,7 @@ const CreateMov = () => {
               value={exercises[activeExercise].sets[activeSet].reps}
               onChange={(e) => handleSetRep(activeExercise, activeSet, e)}
               min={1}
-              max={50}
+              max={MAX_REPS}
               className="scale-[230%] accent-primary"
             />
 
