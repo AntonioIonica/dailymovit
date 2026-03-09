@@ -17,31 +17,27 @@ import { parseTimerToMinutes } from "@/lib/utils";
 const MAX_REPS = 100;
 
 const CreateMov = () => {
-  const [workout, setWorkout] = useState(
-    JSON.parse(localStorage.getItem("currentWorkout")!)?.workout ?? {
-      name: "",
-      duration: 0,
-      public: true,
+  const [workout, setWorkout] = useState({
+    name: "",
+    duration: 0,
+    public: true,
+  });
+  const [exercises, setExercises] = useState([
+    {
+      exerciseName: "",
+      notes: "",
+      sets: [
+        {
+          reps: 1,
+          duration: 0,
+          rest_time: 0,
+          set_number: 1,
+          weight: 0,
+          rpe: 1,
+        },
+      ],
     },
-  );
-  const [exercises, setExercises] = useState(
-    JSON.parse(localStorage.getItem("currentWorkout")!)?.exercises ?? [
-      {
-        exerciseName: "",
-        notes: "",
-        sets: [
-          {
-            reps: 1,
-            duration: 0,
-            rest_time: 0,
-            set_number: 1,
-            weight: 0,
-            rpe: 1,
-          },
-        ],
-      },
-    ],
-  );
+  ]);
   const [activeExercise, setActiveExercise] = useState<number>(0);
   const [activeSet, setActiveSet] = useState<number>(0);
   const [workDuration, setWorkDuration] = useState<number>(0);
@@ -53,16 +49,57 @@ const CreateMov = () => {
   const [dayWorkouts, setDayWorkouts] = useState<Workouts | null>(null);
   const [openWorkout, setOpenWorkout] = useState<null | number>(null);
   const [openExercise, setOpenExercise] = useState<null | number>(null);
+  const [initialized, setInitialized] = useState(false);
 
   const router = useRouter();
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
+    const storedWorkout = localStorage.getItem("currentWorkout");
+
+    if (storedWorkout) {
+      const parsedCurrentWorkout = JSON.parse(
+        localStorage.getItem("currentWorkout")!,
+      );
+
+      setWorkout(
+        parsedCurrentWorkout?.workout ?? {
+          name: "",
+          duration: 0,
+          public: true,
+        },
+      );
+      setExercises(
+        parsedCurrentWorkout?.exercises ?? [
+          {
+            exerciseName: "",
+            notes: "",
+            sets: [
+              {
+                reps: 1,
+                duration: 0,
+                rest_time: 0,
+                set_number: 1,
+                weight: 0,
+                rpe: 1,
+              },
+            ],
+          },
+        ],
+      );
+
+      setInitialized(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!initialized) return;
+
     localStorage.setItem(
       "currentWorkout",
       JSON.stringify({ workout, exercises }),
     );
-  }, [workout, exercises]);
+  }, [workout, exercises, initialized]);
 
   // server state management
   const {
@@ -327,19 +364,14 @@ const CreateMov = () => {
     const workDurationSets = exercisesField.reduce(
       (sum, exercise) =>
         sum +
-        exercise.sets.reduce(
-          (setSum: number, set: typeof exercise.sets) =>
-            setSum + Number(set.duration),
-          0,
-        ),
+        exercise.sets.reduce((setSum, set) => setSum + Number(set.duration), 0),
       0,
     );
     const restTimeSets = exercisesField.reduce(
       (sum, exercise) =>
         sum +
         exercise.sets.reduce(
-          (setSum: number, set: typeof exercise.sets) =>
-            setSum + Number(set.rest_time),
+          (setSum, set) => setSum + Number(set.rest_time),
           0,
         ),
       0,
@@ -424,71 +456,66 @@ const CreateMov = () => {
               />
             </div>
 
-            {exercises.map(
-              (exercise: typeof exercises, exerciseIndex: number) => (
-                <div
-                  className={`p-2 ${
-                    exerciseIndex == activeExercise
-                      ? "rounded-sm border-2 border-solid border-primary"
-                      : ""
-                  }`}
-                  key={exerciseIndex}
-                >
-                  <div className="flex w-full flex-col">
-                    <input
-                      value={exercise.exerciseName}
-                      type="text"
-                      placeholder="Exercise name"
-                      onChange={(e) => handleExerciseName(exerciseIndex, e)}
-                      className="mb-2 w-full rounded-sm pl-2 focus:scale-[101%] focus:rounded-sm focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
-                    />
-                    {exercise.sets.map(
-                      (set: typeof exercise.sets, setIndex: number) => (
-                        <div
-                          key={setIndex}
-                          className={`containerSet ml-3 ${
-                            setIndex == activeSet &&
-                            exerciseIndex == activeExercise
-                              ? "rounded-sm border-2 border-solid border-primary"
-                              : ""
-                          }`}
-                        >
-                          <div className="wrapperSet mx-2 flex justify-between space-x-4">
-                            <div className="flex items-center justify-between space-x-2 text-sm">
-                              <div className="mr-2">{set.set_number}.</div>
-                              <div>Reps: {set.reps}</div>
-                              <div>
-                                Time:{" "}
-                                {set.duration == 0
-                                  ? "-"
-                                  : parseTimerToMinutes(set.duration)}
-                              </div>
-                              <div>
-                                Weight: {set.weight == 0 ? "-" : set.weight}
-                              </div>
-                            </div>
-                            <button
-                              type="button"
-                              onClick={() => deleteSet(exerciseIndex, setIndex)}
-                              className="mr-auto font-bold text-primary hover:scale-125 hover:outline-none"
-                            >
-                              X
-                            </button>
+            {exercises.map((exercise, exerciseIndex) => (
+              <div
+                className={`p-2 ${
+                  exerciseIndex == activeExercise
+                    ? "rounded-sm border-2 border-solid border-primary"
+                    : ""
+                }`}
+                key={exerciseIndex}
+              >
+                <div className="flex w-full flex-col">
+                  <input
+                    value={exercise.exerciseName}
+                    type="text"
+                    placeholder="Exercise name"
+                    onChange={(e) => handleExerciseName(exerciseIndex, e)}
+                    className="mb-2 w-full rounded-sm pl-2 focus:scale-[101%] focus:rounded-sm focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
+                  {exercise.sets.map((set, setIndex) => (
+                    <div
+                      key={setIndex}
+                      className={`containerSet ml-3 ${
+                        setIndex == activeSet && exerciseIndex == activeExercise
+                          ? "rounded-sm border-2 border-solid border-primary"
+                          : ""
+                      }`}
+                    >
+                      <div className="wrapperSet mx-2 flex justify-between space-x-4">
+                        <div className="flex items-center justify-between space-x-2 text-sm">
+                          <div className="mr-2">{set.set_number}.</div>
+                          <div>Reps: {set.reps}</div>
+                          <div>
+                            Time:{" "}
+                            {set.duration == 0
+                              ? "-"
+                              : parseTimerToMinutes(set.duration)}
+                          </div>
+                          <div>
+                            Weight: {set.weight == 0 ? "-" : set.weight}
                           </div>
                         </div>
-                      ),
-                    )}
-                    <button
-                      type="button"
-                      onClick={() => deleteExercise(exerciseIndex)}
-                      className="ml-auto mt-2 rounded-sm bg-primary px-2 py-1 font-bold text-gray-900 hover:scale-105 hover:bg-secondary"
-                    >
-                      Delete exercise
-                    </button>
-                  </div>
+                        <button
+                          type="button"
+                          onClick={() => deleteSet(exerciseIndex, setIndex)}
+                          className="mr-auto font-bold text-primary hover:scale-125 hover:outline-none"
+                        >
+                          X
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => deleteExercise(exerciseIndex)}
+                    className="ml-auto mt-2 rounded-sm bg-primary px-2 py-1 font-bold text-gray-900 hover:scale-105 hover:bg-secondary"
+                  >
+                    Delete exercise
+                  </button>
                 </div>
-              ),
-            )}
+              </div>
+            ))}
             <div className="flex justify-center">
               <button
                 type="submit"
