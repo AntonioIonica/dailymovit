@@ -35,3 +35,9 @@
 //     }
 //   }
 // }
+
+// If you are using a separate .d.ts file, you must also ensure the
+// implementation in commands.ts does not have top-level exports
+// or include 'export {}' to make it a module.
+// If inside commands.ts, simply add the declaration.
+

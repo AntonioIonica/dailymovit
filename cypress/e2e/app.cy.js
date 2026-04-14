@@ -1,5 +1,5 @@
-describe("Navigation", () => {
-  it("Should navigate to login page", () => {
+describe("Navigation to login", () => {
+  it("Should be able to see the login page", () => {
     cy.visit("http://localhost:3000/");
 
     cy.get('a[href*="/auth/login"]').click({ multiple: true });
@@ -8,4 +8,6 @@ describe("Navigation", () => {
 
     cy.get("h2").contains("Login with:");
   });
+
+  it("Should be able to login with dummy credentials")
 });

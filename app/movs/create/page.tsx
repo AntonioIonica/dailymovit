@@ -50,6 +50,7 @@ const CreateMov = () => {
   const [openWorkout, setOpenWorkout] = useState<null | number>(null);
   const [openExercise, setOpenExercise] = useState<null | number>(null);
   const [initialized, setInitialized] = useState(false);
+  const endRef = useRef<HTMLDivElement | null>(null);
 
   const router = useRouter();
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -91,6 +92,10 @@ const CreateMov = () => {
       setInitialized(true);
     }
   }, []);
+
+  useEffect(() => {
+    endRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [exercises]);
 
   useEffect(() => {
     if (!initialized) return;
@@ -295,7 +300,7 @@ const CreateMov = () => {
 
   function incrementRep() {
     const exercisesField = [...exercises];
-    if (exercisesField[activeExercise].sets[activeSet].reps < 30) {
+    if (exercisesField[activeExercise].sets[activeSet].reps < MAX_REPS) {
       exercisesField[activeExercise].sets[activeSet].reps += 1;
     }
     setExercises(exercisesField);
@@ -516,6 +521,7 @@ const CreateMov = () => {
                 </div>
               </div>
             ))}
+            <div ref={endRef} />
             <div className="flex justify-center">
               <button
                 type="submit"
