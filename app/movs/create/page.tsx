@@ -93,6 +93,7 @@ const CreateMov = () => {
     }
   }, []);
 
+  // Autoscroll to last exercise added
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [exercises]);
@@ -445,7 +446,7 @@ const CreateMov = () => {
                 type="text"
                 value={workout.name}
                 maxLength={25}
-                placeholder="New workout..."
+                placeholder="Workout name"
                 onChange={(e) => handleWorkoutName(e)}
                 className="rounded-sm pl-3 focus:scale-[102%] focus:rounded-sm focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
               />
@@ -540,7 +541,7 @@ const CreateMov = () => {
             <input
               type="text"
               maxLength={25}
-              placeholder="New workout..."
+              placeholder="Exercise name"
               value={exercises[activeExercise].exerciseName}
               onChange={(e) => handleExerciseName(activeExercise, e)}
               className="mt-2 rounded-sm py-2 text-center text-lg focus:scale-[101%] focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
