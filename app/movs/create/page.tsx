@@ -705,7 +705,7 @@ const CreateMov = () => {
         </div>
 
         {/* Calendar and details container */}
-        <div className="card glow h-full w-[9rem] flex-auto flex-col items-center space-y-2 p-1">
+        <div className="card glow h-full w-[9rem] flex-auto flex-col items-center space-y-9 p-1">
           {/* Calendar  */}
           <div className="h-[32%] w-full">
             {!isFetching ? (
