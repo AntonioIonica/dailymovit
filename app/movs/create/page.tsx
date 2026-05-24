@@ -198,7 +198,10 @@ const CreateMov = () => {
   }
 
   function handleWorkoutName(event: { target: { value: string } }) {
-    setWorkout({ ...workout, name: event.target.value });
+    let uppercaseName = event.target.value;
+    uppercaseName =
+      uppercaseName.substring(0, 1).toUpperCase() + uppercaseName.slice(1);
+    setWorkout({ ...workout, name: uppercaseName });
   }
 
   function handleExerciseName(
@@ -206,7 +209,10 @@ const CreateMov = () => {
     event: { target: { value: string } },
   ) {
     const exercisesField = [...exercises];
-    exercisesField[index].exerciseName = event.target.value;
+    let uppercaseName = event.target.value;
+    uppercaseName =
+      uppercaseName.substring(0, 1).toUpperCase() + uppercaseName.slice(1);
+    exercisesField[index].exerciseName = uppercaseName;
     setExercises(exercisesField);
   }
 
