@@ -14,6 +14,7 @@ export async function POST(req: NextRequest) {
     console.log("No user session yet!");
     return;
   }
+  
   try {
     const { newUsername } = await req.json();
 
