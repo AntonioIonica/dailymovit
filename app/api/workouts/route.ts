@@ -18,11 +18,9 @@ export async function POST(req: NextRequest) {
   const {
     data: { user },
   } = await (await supabase).auth.getUser();
-  if (!user) {
-    return NextResponse.json(
-      { error: "The user is not authorized" },
-      { status: 401 },
-    );
+
+  if (!user?.id) {
+    throw new Error("User not authenticated!");
   }
 
   // Workouts
@@ -31,13 +29,14 @@ export async function POST(req: NextRequest) {
   )
     .from("workouts")
     .insert({
-      user_id: user.id,
+      user_id: user?.id,
       duration: body.workout.duration,
       name: body.workout.name,
       public: body.workout.public,
     })
     .select("id")
     .single();
+
   if (workoutError)
     return NextResponse.json(
       {
@@ -57,7 +56,7 @@ export async function POST(req: NextRequest) {
         workout_id: workoutId,
         name: exercise.exerciseName,
         notes: exercise.notes,
-        user_id: user.id,
+        user_id: user?.id,
       })
       .select("id")
       .single();
@@ -73,7 +72,7 @@ export async function POST(req: NextRequest) {
       weight: s.weight,
       rest_time: s.rest_time,
       rpe: s.rpe,
-      user_id: user.id,
+      user_id: user?.id,
     }));
 
     const { error: setError } = await (await supabase)
@@ -96,10 +95,10 @@ export async function GET(req: NextRequest) {
   const {
     data: { user },
   } = await (await supabase).auth.getUser();
-  if (!user) {
+
+  if (!user?.id) {
     return NextResponse.json(
-      { error: "The user is not authorized" },
-      { status: 401 },
+      "The user is not authorized"
     );
   }
 
@@ -109,7 +108,7 @@ export async function GET(req: NextRequest) {
       "id, duration, completed_at, name, public, exercises (id, name, notes, sets (id, set_number, reps, duration, weight, rest_time, rpe))",
     )
     .order("completed_at", { ascending: false })
-    .eq("user_id", user.id);
+    .eq("user_id", user?.id);
 
   const { data: workoutsData, error: workoutsError } = await query;
 
