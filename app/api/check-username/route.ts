@@ -7,8 +7,13 @@ export async function POST(req: NextRequest) {
   const {
     data: { user },
   } = await (await supabase).auth.getUser();
-  if (!user) return NextResponse.json({ message: "You are not authorized!" });
 
+  console.log(user);
+
+  if (!user?.id) {
+    console.log("No user session yet!");
+    return;
+  }
   try {
     const { newUsername } = await req.json();
 
