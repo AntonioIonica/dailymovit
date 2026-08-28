@@ -4,7 +4,7 @@ import DemoCarousel from "./DemoCarousel";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function Hero() {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const {
     data: { user },
