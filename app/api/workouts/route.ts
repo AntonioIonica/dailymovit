@@ -12,23 +12,25 @@ type setType = {
 };
 
 export async function POST(req: NextRequest) {
-  const supabase = createClient();
+  const supabase = await createClient();
   const body = await req.json();
 
   const {
     data: { user },
-  } = await (await supabase).auth.getUser();
+  } = await supabase.auth.getUser();
 
   console.log("Workouts:", user);
 
   if (!user?.id) {
-    throw new Error("User not authenticated!");
+    return NextResponse.json(
+      { error: "User not authenticated" },
+      { status: 401 },
+    );
   }
 
   // Workouts
-  const { data: workoutData, error: workoutError } = await (
-    await supabase
-  )
+  const { data: workoutData, error: workoutError } = await supabase
+
     .from("workouts")
     .insert({
       user_id: user?.id,
@@ -77,7 +79,7 @@ export async function POST(req: NextRequest) {
       user_id: user?.id,
     }));
 
-    const { error: setError } = await (await supabase)
+    const { error: setError } = await supabase
       .from("sets")
       .insert(setsToInsert);
     if (setError)
@@ -91,20 +93,23 @@ export async function POST(req: NextRequest) {
 }
 
 export async function GET(req: NextRequest) {
-  const supabase = createClient();
+  const supabase = await createClient();
   // const { searchParams } = new URL(req.url);
 
   const {
     data: { user },
-  } = await (await supabase).auth.getUser();
+  } = await supabase.auth.getUser();
 
   console.log("Workouts:", user);
 
   if (!user?.id) {
-    return NextResponse.json("The user is not authorized");
+    return NextResponse.json(
+      { error: "User not authenticated" },
+      { status: 401 },
+    );
   }
 
-  const query = (await supabase)
+  const query = supabase
     .from("workouts")
     .select(
       "id, duration, completed_at, name, public, exercises (id, name, notes, sets (id, set_number, reps, duration, weight, rest_time, rpe))",

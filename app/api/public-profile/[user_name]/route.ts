@@ -6,9 +6,9 @@ export async function GET(
   { params }: { params: Promise<{ user_name: string }> },
 ) {
   const { user_name } = await params;
-  const supabase = createClient();
+  const supabase = await createClient();
 
-  const { data: userData, error: userError } = await (await supabase)
+  const { data: userData, error: userError } = await supabase
     .from("profiles")
     .select("id, user_name, display_name, avatar_url")
     .eq("user_name", user_name)
@@ -21,7 +21,7 @@ export async function GET(
     );
   }
 
-  const { data: workoutData, error: workoutError } = await (await supabase)
+  const { data: workoutData, error: workoutError } = await supabase
     .from("workouts")
     .select(
       "id, duration, completed_at, name, exercises (id, name, notes, sets (id, set_number, reps, duration, weight, rest_time, rpe))",

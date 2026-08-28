@@ -11,7 +11,10 @@ export async function GET(req: NextRequest) {
   console.log("Check dashboard:", user);
 
   if (!user?.id) {
-    throw new Error("The user is not authenticated!");
+    return NextResponse.json(
+      { error: "User not authenticated" },
+      { status: 401 },
+    );
   }
 
   const { data: profileData, error: profileError } = await supabase
@@ -36,12 +39,12 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const supabase = createClient();
+  const supabase = await createClient();
   const body = await req.json();
 
   const {
     data: { user },
-  } = await (await supabase).auth.getUser();
+  } = await supabase.auth.getUser();
 
   console.log("Check username:", user);
   if (!user) {
@@ -51,9 +54,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { error } = await (
-    await supabase
-  )
+  const { error } = await supabase
     .from("profiles")
     .update({
       avatar_url: body.avatar_url,

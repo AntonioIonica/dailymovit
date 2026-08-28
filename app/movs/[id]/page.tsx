@@ -135,7 +135,7 @@ const MovsList = () => {
   // get the current logged user
   useEffect(() => {
     const fetchUser = async () => {
-      const supabase = createClient();
+      const supabase = await createClient();
 
       const {
         data: { user },
