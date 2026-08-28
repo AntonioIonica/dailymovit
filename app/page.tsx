@@ -1,12 +1,14 @@
 import Hero from "@/components/hero";
-
+import { Suspense } from "react";
 
 export default function Home() {
   return (
     <div className="flex h-[90vh] flex-col items-center justify-between">
       {/* Hero section */}
       <div className="max-w-screen flex flex-1 flex-col items-center p-5">
-        <Hero />
+        <Suspense fallback={<div>Loading...</div>}>
+          <Hero />
+        </Suspense>
       </div>
 
       {/* Footer section */}
