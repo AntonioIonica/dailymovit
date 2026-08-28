@@ -2,23 +2,24 @@ import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
-  const supabase = createClient();
-
-  const {
-    data: { user },
-  } = await (await supabase).auth.getUser();
-
-  console.log(user);
-
-  if (!user?.id) {
-    console.log("No user session yet!");
-    return;
-  }
-  
   try {
+    const supabase = await createClient();
+
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
+
+    if (!user || userError) {
+      return NextResponse.json(
+        { error: "User not authenticated" },
+        { status: 401 },
+      );
+    }
+
     const { newUsername } = await req.json();
 
-    const { data: usernameData, error: usernameError } = await (await supabase)
+    const { data: usernameData, error: usernameError } = await supabase
       .from("profiles")
       .select("user_name")
       .eq("user_name", newUsername);
@@ -32,5 +33,12 @@ export async function POST(req: NextRequest) {
     });
   } catch (error) {
     console.error(error);
+
+    return NextResponse.json(
+      {
+        error: "Internal server error",
+      },
+      { status: 500 },
+    );
   }
 }
