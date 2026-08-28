@@ -52,9 +52,7 @@ export async function POST(req: NextRequest) {
 
   // Exercises
   for (const exercise of body.exercises) {
-    const { data: exerciseData, error: exerciseError } = await (
-      await supabase
-    )
+    const { data: exerciseData, error: exerciseError } = await supabase
       .from("exercises")
       .insert({
         workout_id: workoutId,
