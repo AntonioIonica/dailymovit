@@ -10,6 +10,8 @@ export default async function Hero() {
     data: { user },
   } = await (await supabase).auth.getUser();
 
+  console.log("Hero page:", user);
+
   return (
     <>
       {/* Hero */}
@@ -141,7 +143,7 @@ export default async function Hero() {
             ) : (
               <Link
                 href="/movs/create"
-                className="mt-8 flex w-content items-center justify-center rounded-xl bg-white px-8 py-3 font-semibold text-black hover:bg-gray-200"
+                className="w-content mt-8 flex items-center justify-center rounded-xl bg-white px-8 py-3 font-semibold text-black hover:bg-gray-200"
               >
                 Start your workout
               </Link>

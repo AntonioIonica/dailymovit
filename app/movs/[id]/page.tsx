@@ -141,7 +141,9 @@ const MovsList = () => {
         data: { user },
       } = await supabase.auth.getUser();
 
-      if(user?.id) setUserId(user?.id);
+      console.log("MovsList:", user);
+
+      if (user?.id) setUserId(user?.id);
     };
 
     fetchUser();

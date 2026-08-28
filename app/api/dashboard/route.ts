@@ -2,19 +2,19 @@ import { createClient } from "@/lib/supabase/server";
 import { NextResponse, NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const {
     data: { user },
-  } = await (await supabase).auth.getUser();
-  if (!user) {
-    return NextResponse.json(
-      { message: "The user is not authenticated!" },
-      { status: 401 },
-    );
+  } = await supabase.auth.getUser();
+
+  console.log("Check dashboard:", user);
+
+  if (!user?.id) {
+    throw new Error("The user is not authenticated!");
   }
 
-  const { data: profileData, error: profileError } = await (await supabase)
+  const { data: profileData, error: profileError } = await supabase
     .from("profiles")
     .select("user_name, display_name, avatar_url, email")
     .eq("id", user.id)
@@ -42,6 +42,8 @@ export async function POST(req: NextRequest) {
   const {
     data: { user },
   } = await (await supabase).auth.getUser();
+
+  console.log("Check username:", user);
   if (!user) {
     return NextResponse.json(
       { message: "The user is not authorized" },

@@ -19,6 +19,8 @@ export async function POST(req: NextRequest) {
     data: { user },
   } = await (await supabase).auth.getUser();
 
+  console.log("Workouts:", user);
+
   if (!user?.id) {
     throw new Error("User not authenticated!");
   }
@@ -96,10 +98,10 @@ export async function GET(req: NextRequest) {
     data: { user },
   } = await (await supabase).auth.getUser();
 
+  console.log("Workouts:", user);
+
   if (!user?.id) {
-    return NextResponse.json(
-      "The user is not authorized"
-    );
+    return NextResponse.json("The user is not authorized");
   }
 
   const query = (await supabase)
