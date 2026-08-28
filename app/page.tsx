@@ -23,7 +23,6 @@ export default function Home() {
           </a>{" "}
           2026
         </p>
-        {/* <ThemeSwitcher /> */}
       </footer>
     </div>
   );
