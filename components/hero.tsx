@@ -8,7 +8,7 @@ export default async function Hero() {
 
   const {
     data: { user },
-  } = await (await supabase).auth.getUser();
+  } = await supabase.auth.getUser();
 
   console.log("Hero page:", user);
 
