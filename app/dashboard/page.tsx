@@ -61,7 +61,6 @@ export default function Dashboard() {
         body: JSON.stringify(newProfile),
       });
 
-      console.log(res.json);
 
       return await res.json();
     },

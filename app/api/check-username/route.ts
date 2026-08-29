@@ -10,8 +10,6 @@ export async function POST(req: NextRequest) {
       error: userError,
     } = await supabase.auth.getUser();
 
-    console.log("Check username:", user);
-
     if (!user || userError) {
       return NextResponse.json(
         { error: "User not authenticated" },

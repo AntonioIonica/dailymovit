@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  console.log("Workouts:", user);
+
 
   if (!user?.id) {
     return NextResponse.json(
@@ -98,7 +98,6 @@ export async function GET(req: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  console.log("Workouts:", user);
 
   if (!user?.id) {
     return NextResponse.json(

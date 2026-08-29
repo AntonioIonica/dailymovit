@@ -8,8 +8,6 @@ export async function GET(req: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  console.log("Check dashboard:", user);
-
   if (!user?.id) {
     return NextResponse.json(
       { error: "User not authenticated" },
@@ -46,7 +44,7 @@ export async function POST(req: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  console.log("Check username:", user);
+
   if (!user) {
     return NextResponse.json(
       { message: "The user is not authorized" },
