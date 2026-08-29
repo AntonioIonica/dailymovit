@@ -11,6 +11,7 @@ import { RechartsDevtools } from "@recharts/devtools";
 import _ from "lodash";
 import { useQuery } from "@tanstack/react-query";
 import { parseTimerToMinutes } from "@/lib/utils";
+import { NextResponse } from "next/server";
 
 type Workout = {
   id: string;
@@ -143,7 +144,14 @@ const MovsList = () => {
 
       console.log("MovsList:", user);
 
-      if (user?.id) setUserId(user?.id);
+      if (!user?.id) {
+        return NextResponse.json(
+          { message: "User not found" },
+          { status: 500 },
+        );
+      }
+
+      setUserId(user?.id);
     };
 
     fetchUser();

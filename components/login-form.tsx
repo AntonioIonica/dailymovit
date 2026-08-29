@@ -17,7 +17,7 @@ export function LoginForm({
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
   const handleSignWithGoogle = async () => {
-    const supabase = await createClient();
+    const supabase = createClient();
 
     try {
       const { error } = await supabase.auth.signInWithOAuth({
