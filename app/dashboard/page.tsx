@@ -28,6 +28,7 @@ function debounce<T extends (...args: any[]) => void>(func: T, delay = 1200) {
 
 export default function Dashboard() {
   const queryClient = useQueryClient();
+
   const [profile, setProfile] = useState<ProfileType>({
     email: "",
     display_name: "",
@@ -45,6 +46,7 @@ export default function Dashboard() {
       const result = await res.json();
 
       setProfile(result.data);
+      console.log(result.data);
       return result.data;
     },
   });
@@ -58,6 +60,8 @@ export default function Dashboard() {
         },
         body: JSON.stringify(newProfile),
       });
+
+      console.log(res.json);
 
       return await res.json();
     },

@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import DemoCarousel from "./DemoCarousel";
 import { createClient } from "@/lib/supabase/server";
-import { redirect } from "next/navigation";
 
 export default async function Hero() {
   const supabase = await createClient();
@@ -10,8 +9,6 @@ export default async function Hero() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-
-  if (!user) redirect("/");
 
   console.log("Hero page:", user);
 
