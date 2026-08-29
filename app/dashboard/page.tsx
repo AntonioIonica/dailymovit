@@ -45,8 +45,11 @@ export default function Dashboard() {
       const res = await fetch("/api/dashboard");
       const result = await res.json();
 
-      setProfile(result.data);
-      console.log(result.data);
+      if (result.data) {
+        setProfile(result.data);
+        console.log(result.data);
+      }
+
       return result.data;
     },
   });
@@ -60,7 +63,6 @@ export default function Dashboard() {
         },
         body: JSON.stringify(newProfile),
       });
-
 
       return await res.json();
     },
